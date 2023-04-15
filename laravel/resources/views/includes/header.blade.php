@@ -32,7 +32,7 @@
             <ul class="navbar-nav">
                 <li>
                     <div class="text-lg-right text-center">
-                        <a href="index.html" class="text-black text-decoration-none">
+                        <a href="/" class="text-black text-decoration-none">
                             <img class="d-none d-lg-block" src="images/logo/logo-large.svg" width="330" height="48"
                                     alt="Kníhkupectvo Knihomoľ"/>
                             <div class="text-center">
@@ -54,17 +54,17 @@
                             placeholder="Hľadať podľa názvu, autora..." aria-label="Search"></form>
             </li>
             <li class="nav-item ms-2 me-2 pt-1">
-                <a href="html/user-auth/log-in.html">
+                <a href="log-in">
                     <button id="log-in-btn" type="button" class="btn btn-outline-dark me-2 nav-btn">Prihlásiť</button>
                 </a>
             </li>
             <li class="nav-item ms-2 pt-1 me-2 mb-3">
-                <a href="html/user-auth/registration.html">
+                <a href="registration">
                     <button id="registration-btn" type="button" class="btn btn-warning me-2 nav-btn">Registrovať</button>
                 </a>
             </li>
             <li class="nav-item ms-2 me-2 pt-2">
-                <a href="html/order/shopping-cart.html"
+                <a href="shopping-cart"
                     class="d-flex text-black text-decoration-none mb-2 justify-content-center mb-md-0"><img
                         src="images/basket/basket.svg" class="bi me-2" width="40" height="32" alt="Go to cart"/></a>
             </li>

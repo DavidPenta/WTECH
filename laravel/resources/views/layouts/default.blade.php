@@ -7,7 +7,7 @@
 <header class="navbar navbar-expand-md bg-light p-3 w-100">
     @include('includes.header')
 </header>
-<div class="container">
+<div class="container mb-5">
     @yield('content')
 </div>
 <footer class="footer pb-5 pt-5 bg-dark mt-auto">
