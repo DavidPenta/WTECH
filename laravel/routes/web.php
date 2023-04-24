@@ -17,14 +17,46 @@ Route::get('/', function () {
     return view('pages/index');
 });
 
-Route::get('/order', function () {
-    return view('pages/order');
+Route::get('/admin/admin-book-add', function () {
+    return view('pages/admin/admin-book-add');
 });
 
-Route::get('/shopping-cart', function () {
-    return view('pages/shopping-cart');
+Route::get('/admin/admin-book-edit-list', function () {
+    return view('pages/admin/admin-book-edit-list');
 });
 
-Route::get('/thank-you', function () {
-    return view('pages/thank-you');
+Route::get('/admin/admin-book-edit', function () {
+    return view('pages/admin/admin-book-edit');
+});
+
+Route::get('/order/order', function () {
+    return view('pages/order/order');
+});
+
+Route::get('/order/shopping-cart', function () {
+    return view('pages/order/shopping-cart');
+});
+
+Route::get('/order/thank-you', function () {
+    return view('pages/order/thank-you');
+});
+
+Route::get('/products/category', function () {
+    return view('pages/products/category');
+});
+
+Route::get('/products/product-detail', function () {
+    return view('pages/products/product-detail');
+});
+
+Route::get('/user-auth/forgot-password', function () {
+    return view('pages/user-auth/forgot-password');
+});
+
+Route::get('/user-auth/log-in', function () {
+    return view('pages/user-auth/log-in');
+});
+
+Route::get('/user-auth/registration', function () {
+    return view('pages/user-auth/registration');
 });
