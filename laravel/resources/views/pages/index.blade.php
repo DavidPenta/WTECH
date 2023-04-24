@@ -71,7 +71,7 @@
     </aside>
     <main class="col-12 col-lg-9 mb-5">
         <article>
-            <div class="row align-middle pt-3 bg-white shadow-sm rounded-extra mt-4 mb-5">
+            <div class="row align-middle pt-3 bg-white shadow-sm rounded-extra mt-4">
                 <h1 class="col-12 pb-3 ps-5 pt-3">Odporúčené</h1>
                 <div class="col-12 col-md-6 p-2">
                     <article class="bg-light shadow-sm rounded-extra p-2 ms-2 me-2">
