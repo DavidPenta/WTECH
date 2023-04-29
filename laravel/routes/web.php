@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,13 +42,11 @@ Route::get('/thank-you', function () {
     return view('pages/order/thank-you');
 });
 
-Route::get('/products/category', function () {
-    return view('pages/products/category');
-});
+Route::get('/products/category', [ProductsController::class, 'CategoryRoute'])
+    ->name('category');
 
-Route::get('/products/product-detail', function () {
-    return view('pages/products/product-detail');
-});
+Route::get('/products/product-detail', [ProductsController::class, 'ProductDetailRoute'])
+    ->name('product-detail');
 
 Route::get('/forgot-password', function () {
     return view('pages/user-auth/forgot-password');
