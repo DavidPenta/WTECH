@@ -1,4 +1,7 @@
 @extends('layouts.default')
+@section('head')
+    <link rel="stylesheet" href="/styles/style.css">
+@stop
 @section('content')
 <div class="container align-middle align-middle">
     <section class="container align-middle pt-4 bg-white shadow-sm rounded-extra mt-5 mb-3 pb-3">

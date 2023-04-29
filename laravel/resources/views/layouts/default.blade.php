@@ -2,6 +2,7 @@
 <html lang="sk">
 <head>
     @include('includes.head')
+    @yield('head')
 </head>
 <body class="d-flex flex-column min-vh-100">
 <header class="navbar navbar-expand-md bg-light p-3 w-100">

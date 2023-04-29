@@ -1,4 +1,7 @@
 @extends('layouts.default')
+@section('head')
+    <link rel="stylesheet" href="/styles/category-style.css">
+@stop
 @section('content')
 <section class="container align-middle pt-3 pb-3 bg-white shadow-sm rounded-extra mt-5">
     <img class="img-fluid rounded-extra" alt="Background image of books"

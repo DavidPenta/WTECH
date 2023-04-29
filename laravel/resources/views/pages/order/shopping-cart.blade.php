@@ -1,4 +1,7 @@
 @extends('layouts.default')
+@section('head')
+    <link rel="stylesheet" href="/styles/shopping-cart-style.css">
+@stop
 @section('content')
 <div class="container align-middle">
     <section class="container align-middle bg-white shadow-sm rounded-extra mt-5 mb-3 p-4">

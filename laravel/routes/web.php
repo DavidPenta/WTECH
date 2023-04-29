@@ -29,15 +29,15 @@ Route::get('/admin/admin-book-edit', function () {
     return view('pages/admin/admin-book-edit');
 });
 
-Route::get('/order/order', function () {
+Route::get('/order', function () {
     return view('pages/order/order');
 });
 
-Route::get('/order/shopping-cart', function () {
+Route::get('/shopping-cart', function () {
     return view('pages/order/shopping-cart');
 });
 
-Route::get('/order/thank-you', function () {
+Route::get('/thank-you', function () {
     return view('pages/order/thank-you');
 });
 
@@ -49,14 +49,14 @@ Route::get('/products/product-detail', function () {
     return view('pages/products/product-detail');
 });
 
-Route::get('/user-auth/forgot-password', function () {
+Route::get('/forgot-password', function () {
     return view('pages/user-auth/forgot-password');
 });
 
-Route::get('/user-auth/log-in', function () {
+Route::get('/log-in', function () {
     return view('pages/user-auth/log-in');
 });
 
-Route::get('/user-auth/registration', function () {
+Route::get('/registration', function () {
     return view('pages/user-auth/registration');
 });
