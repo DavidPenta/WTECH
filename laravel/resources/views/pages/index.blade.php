@@ -17,7 +17,7 @@
             <h3 class="mb-3 ms-4">Bestsellery</h3>
             <div class="align-middle bg-light shadow-sm rounded-extra mb-4 ms-3 me-3">
                 <div class="row p-3">
-                    <a class="text-decoration-none text-black" href="html/products/product-detail.html ">
+                    <a class="text-decoration-none text-black" href="product-detail?product-id=100">
                         <h5 class="ms-2 mb-1"><b>Názov knihy</b></h5>
                         <p class="ms-2">Autor knihy</p>
                         <div class="d-flex col-6 align-left text-center container">
@@ -35,7 +35,8 @@
             </div>
             <div class="align-middle bg-light shadow-sm rounded-extra mb-4 ms-3 me-3">
                 <div class="row p-3">
-                    <a class="text-decoration-none text-black" href="html/products/product-detail.html ">
+                    <a class="text-decoration-none text-black" href="product-detail?product-id=100">
+{{--                        $val -> id--}}
                         <h5 class="ms-2 mb-1"><b>Názov knihy</b></h5>
                         <p class="ms-2">Autor knihy</p>
                         <div class="d-flex col-6 align-left text-center container">
@@ -53,7 +54,7 @@
             </div>
             <div class="align-middle bg-light shadow-sm rounded-extra mb-4 ms-3 me-3">
                 <div class="row p-3">
-                    <a class="text-decoration-none text-black" href="html/products/product-detail.html ">
+                    <a class="text-decoration-none text-black" href="product-detail?product-id=100">
                         <h5 class="ms-2 mb-1"><b>Názov knihy</b></h5>
                         <p class="ms-2">Autor knihy</p>
                         <div class="d-flex col-6 align-left text-center container">
@@ -78,7 +79,7 @@
                 <h1 class="col-12 pb-3 ps-5 pt-3">Odporúčené</h1>
                 <div class="col-12 col-md-6 p-2">
                     <article class="bg-light shadow-sm rounded-extra p-2 ms-2 me-2">
-                        <a class="text-decoration-none text-black" href="html/products/product-detail.html ">
+                        <a class="text-decoration-none text-black" href="product-detail?product-id=100">
                             <section class="p-1">
                                 <h3 data-bs-toggle="tooltip" title="Názov knihy" class="offset-left text-wrap text-break">
                                     Názov knihy
@@ -119,7 +120,7 @@
                 </div>
                 <div class="col-12 col-md-6 p-2">
                     <article class="bg-light shadow-sm rounded-extra p-2 ms-2 me-2">
-                        <a class="text-decoration-none text-black" href="html/products/product-detail.html ">
+                        <a class="text-decoration-none text-black" href="product-detail?product-id=100">
                             <section class="p-1">
                                 <h3 data-bs-toggle="tooltip" title="Lorem ipsum dolor sit amet, consecteturadipiscingelitinteger" class="offset-left text-truncate">
                                     Lorem ipsum dolor sit amet, consecteturadipiscingelitinteger.
@@ -166,7 +167,7 @@
                 </div>
                 <div class="col-12 col-md-6 p-2">
                     <article class="bg-light shadow-sm rounded-extra p-2 ms-2 me-2">
-                        <a class="text-decoration-none text-black" href="html/products/product-detail.html ">
+                        <a class="text-decoration-none text-black" href="product-detail?product-id=100">
                             <section class="p-1">
                                 <h3 data-bs-toggle="tooltip" title="Názov knihy" class="offset-left text-wrap text-break">
                                     Názov knihy
@@ -207,7 +208,7 @@
                 </div>
                 <div class="col-12 col-md-6 p-2">
                     <article class="bg-light shadow-sm rounded-extra p-2 ms-2 me-2">
-                        <a class="text-decoration-none text-black" href="html/products/product-detail.html ">
+                        <a class="text-decoration-none text-black" href="product-detail?product-id=100">
                             <section class="p-1">
                                 <h3 data-bs-toggle="tooltip" title="Názov knihy" class="offset-left text-wrap text-break">
                                     Názov knihy
@@ -248,7 +249,7 @@
                 </div>
                 <div class="col-12 col-md-6 p-2">
                     <article class="bg-light shadow-sm rounded-extra p-2 ms-2 me-2">
-                        <a class="text-decoration-none text-black" href="html/products/product-detail.html ">
+                        <a class="text-decoration-none text-black" href="product-detail?product-id=100">
                             <section class="p-1">
                                 <h3 data-bs-toggle="tooltip" title="Lorem ipsum dolor sit amet, consecteturadipiscingelitinteger" class="offset-left text-truncate">
                                     Lorem ipsum dolor sit amet, consecteturadipiscingelitinteger.
@@ -295,7 +296,7 @@
                 </div>
                 <div class="col-12 col-md-6 p-2">
                     <article class="bg-light shadow-sm rounded-extra p-2 ms-2 me-2">
-                        <a class="text-decoration-none text-black" href="html/products/product-detail.html ">
+                        <a class="text-decoration-none text-black" href="product-detail?product-id=100">
                             <section class="p-1">
                                 <h3 data-bs-toggle="tooltip" title="Lorem ipsum dolor sit amet, consecteturadipiscingelitinteger" class="offset-left text-truncate">
                                     Lorem ipsum dolor sit amet, consecteturadipiscingelitinteger.
@@ -342,7 +343,7 @@
                 </div>
                 <div class="col-12 col-md-6 p-2">
                     <article class="bg-light shadow-sm rounded-extra p-2 ms-2 me-2">
-                        <a class="text-decoration-none text-black" href="html/products/product-detail.html ">
+                        <a class="text-decoration-none text-black" href="product-detail?product-id=100">
                             <section class="p-1">
                                 <h3 data-bs-toggle="tooltip" title="Lorem ipsum dolor sit amet, consecteturadipiscingelitinteger" class="offset-left text-truncate">
                                     Lorem ipsum dolor sit amet, consecteturadipiscingelitinteger.
@@ -389,7 +390,7 @@
                 </div>
                 <div class="col-12 col-md-6 p-2">
                     <article class="bg-light shadow-sm rounded-extra p-2 ms-2 me-2">
-                        <a class="text-decoration-none text-black" href="html/products/product-detail.html ">
+                        <a class="text-decoration-none text-black" href="product-detail?product-id=100">
                             <section class="p-1">
                                 <h3 data-bs-toggle="tooltip" title="Lorem ipsum dolor sit amet, consecteturadipiscingelitinteger" class="offset-left text-truncate">
                                     Lorem ipsum dolor sit amet, consecteturadipiscingelitinteger.

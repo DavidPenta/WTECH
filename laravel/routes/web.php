@@ -42,10 +42,10 @@ Route::get('/thank-you', function () {
     return view('pages/order/thank-you');
 });
 
-Route::get('/products/category', [ProductsController::class, 'CategoryRoute'])
+Route::get('/category', [ProductsController::class, 'CategoryRoute'])
     ->name('category');
 
-Route::get('/products/product-detail', [ProductsController::class, 'ProductDetailRoute'])
+Route::get('/product-detail', [ProductsController::class, 'ProductDetailRoute'])
     ->name('product-detail');
 
 Route::get('/forgot-password', function () {
