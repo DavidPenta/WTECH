@@ -34,6 +34,13 @@ class BookMock
 
 class ProductsController extends Controller
 {
+    private static array $defaultValues = [
+        'minPrice' => 0,
+        'maxPrice' => 10000,
+        'minPages' => 1,
+        'maxPages' => 10000,
+    ];
+
     private static array $categoryTitleMapping = [
         'bestseller' => 'Bestsellery',
         'news' => 'Novinky',
@@ -50,24 +57,67 @@ class ProductsController extends Controller
         'poetry' => 'Poézia',
         'lifestyle' => 'Životný štýl',
         'children' => 'Deti a mládež',
-        'education' => 'Náučná a odborná literatúra'
+        'education' => 'Náučná a odborná literatúra',
+        'all' => 'Všetky vyhľadávania'
+    ];
+
+    private static array $categoryOrderOptions = [
+        'new',
+        'old',
+        'cheap',
+        'expensive',
+        'short',
+        'long'
+    ];
+
+    private static array $bookLanguageOptions = [
+        'all',
+        'sk',
+        'en',
+        'cz',
+        'de'
     ];
 
     public function CategoryRoute(Request $req)
     {
         $pageNumber = $req->page;
+        $maxPageNumber = 20;
         $categoryNameFromRequest = $req->categoryName;
-        $categoryName = 'Neznáma kategória';
-        if (array_key_exists($categoryNameFromRequest, self::$categoryTitleMapping))
-        {
-            $categoryName = self::$categoryTitleMapping[$req->categoryName];
-        }
+        $categoryName = array_key_exists($categoryNameFromRequest, self::$categoryTitleMapping)
+            ? self::$categoryTitleMapping[$req->categoryName]
+            : 'Neznáma kategória';
+        $categoryOrderFromRequest = $req->order;
+        $categoryOrder = in_array($categoryOrderFromRequest, self::$categoryOrderOptions)
+            ? $categoryOrderFromRequest
+            : 'new';
+        $minPrice = $req->{'min-price'} ?? self::$defaultValues['minPrice'];
+        $maxPrice = $req->{'max-price'} ?? self::$defaultValues['maxPrice'];
+        $minPages = $req->{'min-pages'} ?? self::$defaultValues['minPages'];
+        $maxPages = $req->{'max-pages'} ?? self::$defaultValues['maxPages'];
+        $languageFromRequest = $req->language;
+        $language = in_array($languageFromRequest, self::$bookLanguageOptions)
+            ? $languageFromRequest
+            : 'all';
+        \Log::debug($req->all());
+        \Log::debug($categoryOrder);
         $books = [
             new BookMock(1, 'Book Name', 'Author Name', 'Publisher Name', 105, 'Description', 20.50),
             new BookMock(2, 'Book Name', 'Author Name', 'Publisher Name', 26, 'Description', 30.50),
             new BookMock(3, 'Book Name', 'Author Name', 'Publisher Name', 438, 'Description', 9.00)
         ]; // Mocked, use db later
-        return view('pages/products/category', ['categoryName' => $categoryName, 'pageNubmer' => $pageNumber, 'bookList' => $books]);
+        return view('pages/products/category', [
+            'category' => $categoryNameFromRequest, 
+            'categoryName' => $categoryName,
+            'categoryOrder' => $categoryOrder,
+            'pageNumber' => $pageNumber,
+            'maxPageNumber' => $maxPageNumber,
+            'minPrice' => $minPrice,
+            'maxPrice' => $maxPrice,
+            'minPages' => $minPages,
+            'maxPages' => $maxPages,
+            'language' => $language,
+            'bookList' => $books
+        ]);
     }
     public function ProductDetailRoute(Request $req)
     {

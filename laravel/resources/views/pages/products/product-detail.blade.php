@@ -1,9 +1,7 @@
 @extends('layouts.default')
-
 @section('head')
     <link rel="stylesheet" href="/styles/product-detail-style.css">
 @stop
-
 @section('content')
 <div class="container">
     <div class="container align-middle pt-5 pb-5 bg-white shadow-sm rounded-extra mt-5 mb-5">
