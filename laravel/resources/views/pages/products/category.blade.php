@@ -115,7 +115,7 @@
                                             {{ $book->name }}
                                         </h3>
                                         <h4 data-bs-toggle="tooltip" title="Meno autora" class="offset-left text-wrap text-break">
-                                            {{ $book->authorName }}
+                                            {{ $book->author }}
                                         </h4>
                                     </section>
                                     <section class="row p-3">
@@ -127,7 +127,7 @@
                                             <div class="row">
                                                 <section class="d-flex container align-left book-description">
                                                     <p class="text-wrap text-break line-clamp">
-                                                        {{ $book->description }}
+                                                        {{ $book->describtion }}
                                                     </p>
                                                 </section>
                                                 <div class="d-flex container align-left align-items-end">

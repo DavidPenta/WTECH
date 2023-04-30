@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product;
 
 class BookMock
 {
@@ -100,11 +101,12 @@ class ProductsController extends Controller
             : 'all';
         \Log::debug($req->all());
         \Log::debug($categoryOrder);
-        $books = [
+        /*$books = [
             new BookMock(1, 'Book Name', 'Author Name', 'Publisher Name', 105, 'Description', 20.50),
             new BookMock(2, 'Book Name', 'Author Name', 'Publisher Name', 26, 'Description', 30.50),
             new BookMock(3, 'Book Name', 'Author Name', 'Publisher Name', 438, 'Description', 9.00)
-        ]; // Mocked, use db later
+        ];*/ // Mocked, use db later
+        $books = Product::all(); 
         return view('pages/products/category', [
             'category' => $categoryNameFromRequest, 
             'categoryName' => $categoryName,
@@ -122,7 +124,8 @@ class ProductsController extends Controller
     public function ProductDetailRoute(Request $req)
     {
         $productId = $req->{'product-id'};
-        $bookData = new BookMock(1, 'Book Name', 'Author Name', 'Publisher Name', 5, 'Description', 20.50); // Mocked, use db later
+        $bookData = Product::find($productId);
+        //$bookData = new BookMock(1, 'Book Name', 'Author Name', 'Publisher Name', 5, 'Description', 20.50); // Mocked, use db later
         return view('pages/products/product-detail', ['bookData' => $bookData]);
     }
 }

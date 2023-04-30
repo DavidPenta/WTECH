@@ -12,18 +12,18 @@
             </div>
             <div class="container col-12 col-md-6 mb-5 px-3 ps-md-2 pe-md-3 align-right text-center text-md-start">
                 <h1 class="d-block mt-4">{{ $bookData->name }}</h1>
-                <span class="d-block fs-2 mt-3 text-black">{{ $bookData->authorName }}</span>
-                <span class="d-block fs-4 mt-3 text-black">{{ $bookData->publisherName }}</span>
+                <span class="d-block fs-2 mt-3 text-black">{{ $bookData->author }}</span>
+                <span class="d-block fs-4 mt-3 text-black">{{ $bookData->publisher }}</span>
                 <span class="d-block fs-4 mt-3 text-black">
-                    @if ($bookData->pageCount == 1)
-                        {{ $bookData->pageCount }} strana
-                    @elseif ($bookData->pageCount < 5)
-                        {{ $bookData->pageCount }} strany
+                    @if ($bookData->num_of_pages == 1)
+                        {{ $bookData->num_of_pages }} strana
+                    @elseif ($bookData->num_of_pages < 5)
+                        {{ $bookData->num_of_pages }} strany
                     @else
-                        {{ $bookData->pageCount }} strán
+                        {{ $bookData->num_of_pages }} strán
                     @endif
                 </span>
-                <span class="d-block fs-6 mt-5 text-black">{{ $bookData->description }}</span>
+                <span class="d-block fs-6 mt-5 text-black">{{ $bookData->describtion }}</span>
                 <span class="d-block fs-1 mt-5 text-success text-black"><b>{{ number_format((float)$bookData->price, 2, '.', '') }}€</b></span>
             </div>
         </div>
