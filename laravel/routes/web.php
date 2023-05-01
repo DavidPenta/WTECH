@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductsController;
 
@@ -18,15 +19,15 @@ Route::get('/', function () {
     return view('pages/index');
 });
 
-Route::get('/admin/admin-book-add', function () {
+Route::get('/admin-book-add', function () {
     return view('pages/admin/admin-book-add');
 });
 
-Route::get('/admin/admin-book-edit-list', function () {
+Route::get('/admin-book-edit-list', function () {
     return view('pages/admin/admin-book-edit-list');
 });
 
-Route::get('/admin/admin-book-edit', function () {
+Route::get('/admin-book-edit', function () {
     return view('pages/admin/admin-book-edit');
 });
 
@@ -59,3 +60,6 @@ Route::get('/log-in', function () {
 Route::get('/registration', function () {
     return view('pages/user-auth/registration');
 });
+
+Route::post('/saveBook', [AdminController::class, 'saveBook'])
+    ->name('saveBook');

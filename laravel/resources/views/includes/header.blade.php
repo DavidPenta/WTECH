@@ -49,6 +49,11 @@
     <div id="nav-right" class="text-right pt-2">
         <ul class="navbar-nav">
             <li class="nav-item ms-2 me-2 pt-1">
+                <a href="/admin-book-edit-list">
+                    <button id="admin-ac" type="button" class="btn btn-outline-dark me-2 nav-btn">admin</button>
+                </a>
+            </li>
+            <li class="nav-item ms-2 me-2 pt-1">
                 <form role="search">
                     <input type="search" class="align-bottom form-control form-control-dark text-bg-white"
                             placeholder="Hľadať podľa názvu, autora..." aria-label="Search"></form>
