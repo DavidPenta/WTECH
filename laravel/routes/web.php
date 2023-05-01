@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,9 +35,7 @@ Route::get('/order', function () {
     return view('pages/order/order');
 });
 
-Route::get('/shopping-cart', function () {
-    return view('pages/order/shopping-cart');
-});
+Route::get('/shopping-cart', [OrderController::class, 'ShoppingCartRoute']);
 
 Route::get('/thank-you', function () {
     return view('pages/order/thank-you');

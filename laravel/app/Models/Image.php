@@ -10,4 +10,8 @@ class Image extends Model
     use HasFactory;
 
     protected $table = 'Image';
+
+    public function product() {
+        return $this->belongsTo('App\Models\Product');
+    }
 }
