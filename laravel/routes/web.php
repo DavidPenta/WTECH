@@ -4,6 +4,8 @@ use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\UserAuthController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -22,15 +24,15 @@ Route::get('/', function () {
 
 Route::get('/admin-book-add', function () {
     return view('pages/admin/admin-book-add');
-});
+})->middleware('isLoggedIn');
 
 Route::get('/admin-book-edit-list', function () {
     return view('pages/admin/admin-book-edit-list');
-});
+})->middleware('isLoggedIn');
 
 Route::get('/admin-book-edit', function () {
     return view('pages/admin/admin-book-edit');
-});
+})->middleware('isLoggedIn');
 
 Route::get('/order', function () {
     return view('pages/order/order');
@@ -52,13 +54,20 @@ Route::get('/forgot-password', function () {
     return view('pages/user-auth/forgot-password');
 });
 
-Route::get('/log-in', function () {
-    return view('pages/user-auth/log-in');
-});
+Route::get('/log-in', [UserAuthController::class, 'login'])
+    ->name('log-in');
 
-Route::get('/registration', function () {
-    return view('pages/user-auth/registration');
-});
+Route::get('/registration', [UserAuthController::class, 'registration'])
+    ->name('registration');
+
+Route::post('register-user', [UserAuthController::class, 'registerUser'])
+    ->name('register-user');
+
+Route::post('login-user', [UserAuthController::class, 'loginUser'])
+    ->name('login-user');
+
+Route::get('logout-user', [UserAuthController::class, 'logoutUser'])
+    ->name('logout-user');
 
 Route::post('/saveBook', [AdminController::class, 'saveBook'])
     ->name('saveBook');

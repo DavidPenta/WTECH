@@ -45,13 +45,7 @@ body {
 }
 
 @media only screen and (max-width: 800px) {
-    #log-in-btn {
-        width: 100%;
-    }
-    #registration-btn {
-        width: 100%;
-    }
-    #nav-right {
+    #nav-btn {
         width: 100%;
     }
 }

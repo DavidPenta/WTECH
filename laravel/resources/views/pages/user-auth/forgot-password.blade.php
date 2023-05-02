@@ -12,6 +12,6 @@
                         type="text" class="form-control" id="email" value=""/></fieldset>
             </form>
         </div>
-        <a href="/"><button type="button" class="btn btn-success w-100 mt-4 mb-5 rounded-extra" id="forgot-password">Obnoviť heslo</button></a>
+        <button type="submit" class="btn btn-success w-100 mt-4 mb-5 rounded-extra" id="forgot-password">Obnoviť heslo</button>
     </section>
 @stop
