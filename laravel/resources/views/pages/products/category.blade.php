@@ -127,7 +127,7 @@
                                             <div class="row">
                                                 <section class="d-flex container align-left book-description">
                                                     <p class="text-wrap text-break line-clamp">
-                                                        {{ $book->describtion }}
+                                                        {{ $book->description }}
                                                     </p>
                                                 </section>
                                                 <div class="d-flex container align-left align-items-end">

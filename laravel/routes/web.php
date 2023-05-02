@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserAuthController;
+use \App\Http\Controllers\SearchController;
 
 
 /*
@@ -28,7 +29,7 @@ Route::get('/admin-book-add', function () {
 
 Route::get('/admin-book-edit-list', function () {
     return view('pages/admin/admin-book-edit-list');
-})->middleware('isLoggedIn');
+})->middleware('isLoggedIn')->name('admin-book-edit-list');
 
 Route::get('/admin-book-edit', function () {
     return view('pages/admin/admin-book-edit');
@@ -71,3 +72,6 @@ Route::get('logout-user', [UserAuthController::class, 'logoutUser'])
 
 Route::post('/saveBook', [AdminController::class, 'saveBook'])
     ->name('saveBook');
+
+//Route::get('/search', [ProductsController::class, 'CategoryRoute'])
+//    ->name('search');

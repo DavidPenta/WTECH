@@ -15,13 +15,13 @@ class BookMock
     public string $description;
     public float $price;
 
-    public function __construct(int $id,
+    public function __construct(int    $id,
                                 string $name,
                                 string $authorName,
                                 string $publisherName,
-                                int $pageCount,
+                                int    $pageCount,
                                 string $description,
-                                float $price)
+                                float  $price)
     {
         $this->id = $id;
         $this->name = $name;
@@ -81,6 +81,7 @@ class ProductsController extends Controller
 
     public function CategoryRoute(Request $req)
     {
+        $searchQuery = $req->search;
         $pageNumber = $req->page;
         $maxPageNumber = 20;
         $categoryNameFromRequest = $req->categoryName;
@@ -101,14 +102,19 @@ class ProductsController extends Controller
             : 'all';
         \Log::debug($req->all());
         \Log::debug($categoryOrder);
-        /*$books = [
-            new BookMock(1, 'Book Name', 'Author Name', 'Publisher Name', 105, 'Description', 20.50),
-            new BookMock(2, 'Book Name', 'Author Name', 'Publisher Name', 26, 'Description', 30.50),
-            new BookMock(3, 'Book Name', 'Author Name', 'Publisher Name', 438, 'Description', 9.00)
-        ];*/ // Mocked, use db later
-        $books = Product::all(); 
+
+
+        if (request('search')) {
+            $books = Product::where('name','LIKE','%'.$searchQuery.'%')
+                ->orWhere('author','LIKE','%'.$searchQuery.'%')
+                ->orWhere('description','LIKE','%'.$searchQuery.'%')
+                ->get();
+            $categoryName = "Vyhľadávanie: " . $searchQuery;
+        } else {
+            $books = Product::all();
+        }
         return view('pages/products/category', [
-            'category' => $categoryNameFromRequest, 
+            'category' => $categoryNameFromRequest,
             'categoryName' => $categoryName,
             'categoryOrder' => $categoryOrder,
             'pageNumber' => $pageNumber,
@@ -121,6 +127,7 @@ class ProductsController extends Controller
             'bookList' => $books
         ]);
     }
+
     public function ProductDetailRoute(Request $req)
     {
         $productId = $req->{'product-id'};

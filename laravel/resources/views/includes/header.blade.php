@@ -49,10 +49,16 @@
     <div id="nav-right" class="text-right pt-2">
         <ul class="navbar-nav">
             <li class="nav-item ms-2 me-2 pt-1">
-                <form role="search">
-                    <input type="search" class="align-bottom form-control form-control-dark text-bg-white"
-                           placeholder="Hľadať podľa názvu, autora..." aria-label="Search"></form>
+                <form role="search" action="{{route('category')}}" method="get">
+                    <input name="search" type="search" class="align-bottom form-control form-control-dark text-bg-white" size="30"
+                           placeholder="Hľadať podľa názvu, autora..." aria-label="Search">
+                </form>
             </li>
+            @if(Session::has('AdminId'))
+                <li class="nav-item ms-2 me-2 pt-1">
+                    <a id="nav-btn" href="{{route('admin-book-edit-list')}}" type="button" class="btn btn-outline-dark me-2 nav-btn">Admin</a>
+                </li>
+            @endif
             @if(Session::has('UserId'))
                 <li class="nav-item ms-2 me-2 pt-1">
                     <a id="nav-btn" href="logout-user" type="button" class="btn btn-outline-dark me-2 nav-btn">Odhlásiť sa</a>
