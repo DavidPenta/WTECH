@@ -41,7 +41,7 @@
                             </div>
                         </div>
                         <div class="col-3 align-left text-center">
-                            <a href="admin-book-edit.html">
+                            <a href="admin-book-edit">
                                 <button type="button" class="btn btn-success btn-xl mt-4 rounded-extra float-end" id="upravknihu">
                                     Upraviť
                                 </button>
