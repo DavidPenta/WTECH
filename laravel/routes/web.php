@@ -40,6 +40,8 @@ Route::get('/order', function () {
 });
 
 Route::get('/shopping-cart', [OrderController::class, 'ShoppingCartRoute']);
+Route::put('/shopping-cart/{id}', [OrderController::class, 'ProductCount'])->name('shoppingCart.quantity');
+Route::delete('/shopping-cart/{id}', [OrderController::class, 'DeleteProduct'])->name('shoppingCart.destroy');
 
 Route::get('/thank-you', function () {
     return view('pages/order/thank-you');
