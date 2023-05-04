@@ -78,9 +78,9 @@
                     </div>
                     <div class="row pt-4 pb-5">
 
-                        <div class="col ps-5"><label for="image1">Obrázok č. 1</label><input type="file" class="form-control"
+                        <div class="col ps-5"><label for="image1">Obrázok č. 1</label><input type="text" class="form-control"
                                                                                         id="image1"/></div>
-                        <div class="col"><label for="image2">Obrázok č. 2</label><input type="file" class="form-control"
+                        <div class="col"><label for="image2">Obrázok č. 2</label><input type="text" class="form-control"
                                                                                           id="image2"/></div>
                     </div>
                 <div class="col px-5"><label class="ps-3" for="description">popis knihy</label><textarea id="description"
