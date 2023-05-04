@@ -10,7 +10,7 @@ class Product extends Model
     use HasFactory;
 
     protected $table = 'Product';
-
+    public $timestamps = false;
     public function orderProduct() {
         return $this->belongsTo('App\Models\OrderProduct');
     }

@@ -9,11 +9,15 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
-    public function ShoppingCartRoute()
+    public function ShoppingCartRoute(Request $req)
     {
-        //$currentUserId = Auth::id();
-        //$order = Order::where('user_id',$currentUserId);
-        $order = Order::where('user_id','1');
+        if ($req->session()->has('UserId')) {
+            $currentUserId = $req->session()->get('UserId');
+            $order = Order::where('user_id', $currentUserId);
+        }
+//        $currentUserId = $req;
+//        $order = Order::where('user_id',$currentUserId);
+//        $order = Order::where('user_id','1');
         return view('pages/order/shopping-cart', [
             'order' => $order->first()
         ]);

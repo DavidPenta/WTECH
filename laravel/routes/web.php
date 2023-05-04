@@ -23,9 +23,9 @@ Route::get('/', function () {
     return view('pages/index');
 });
 
-Route::get('/admin-book-add', function () {
-    return view('pages/admin/admin-book-add');
-})->middleware('isLoggedIn');
+Route::get('/admin-book-add', [AdminController::class, 'addBook'])
+    ->middleware('isLoggedIn')
+    ->name('admin-book-add');
 
 Route::get('/admin-book-edit-list', function () {
     return view('pages/admin/admin-book-edit-list');
