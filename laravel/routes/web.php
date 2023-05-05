@@ -19,9 +19,7 @@ use \App\Http\Controllers\SearchController;
 |
 */
 
-Route::get('/', function () {
-    return view('pages/index');
-});
+Route::get('/',[UserAuthController::class, 'index']);
 
 Route::get('/admin-book-add', [AdminController::class, 'addBook'])
     ->middleware('isLoggedIn')
