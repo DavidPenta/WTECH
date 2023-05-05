@@ -53,11 +53,11 @@
                                    href="{{route('product-detail', ['product-id' => $book->id])}}">
                                     <section class="p-1">
                                         <h3 data-bs-toggle="tooltip" title="Názov knihy"
-                                            class="offset-left text-wrap text-break">
+                                            class="offset-left text-truncate">
                                             {{ $book->name }}
                                         </h3>
                                         <h4 data-bs-toggle="tooltip" title="Meno autora"
-                                            class="offset-left text-wrap text-break">
+                                            class="offset-left text-truncate">
                                             {{ $book->author }}
                                         </h4>
                                     </section>

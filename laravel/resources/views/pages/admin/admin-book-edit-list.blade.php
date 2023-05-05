@@ -46,7 +46,7 @@
                                 title="{{ $book->author }}">{{ $book->author }}</h6>
                         </div>
                         <div class="col-3">
-                            <a type="button" href="{{ route('editBook', $book->id) }}" class="btn btn-success btn-xl mt-4 rounded-extra float-end" id="edit">
+                            <a type="button" href="{{ route('editBook', $book->id) }}" class="btn btn-success btn-xl mt-4 mb-4 rounded-extra float-end" id="edit">
                                 Upraviť
                             </a>
                         </div>
@@ -55,7 +55,7 @@
                                 @method('delete')
                                 @csrf
                                 <button type="submit"
-                                        class="float-end btn btn-danger btn-xl mt-4 rounded-extra float-end"
+                                        class="float-end btn btn-danger btn-xl mt-4 mb-4 rounded-extra float-end"
                                         id="delete">
                                     Odstániť
                                 </button>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Image;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Address;
@@ -69,18 +70,22 @@ class UserAuthController extends Controller
         ]);
         $user = User::where('email', '=', $request->user_email)->first();
         if ($user) {
-            if (hash('sha512', $request->user_password) == $user->password_hash) {
+            if (hash('sha512', $request->user_password) == $user->password_hash)
+            {
                 $request->session()->put('UserId', $user->id);
                 if ($user->role == 'admin') {
                     $request->session()->put('AdminId', $user->id);
-                    return view('pages/admin/admin-book-edit-list');
-                } else {
-                    return redirect('/');
+
                 }
-            } else {
+                return redirect('/');
+            }
+            else
+            {
                 return back()->with('fail', 'Nesprávne heslo.')->with('user_email', $request->user_email);
             }
-        } else {
+        }
+        else
+        {
             return back()->with('fail', 'Nesprávny email.')->with('user_email', $request->user_email);
         }
     }
@@ -97,10 +102,12 @@ class UserAuthController extends Controller
 
     public function index()
     {
-        $bestsellers = Product::all()->take(3);
-        $images = DB::table('Image')->get();
-        $books = Product::all()->take(10);
-
+        $bestsellers = Product::inRandomOrder()->where('category_id','=', 1)->take(5)->get();
+        $images = Image::all();
+        $books = DB::select('SELECT a.id, a.name, a.author, a.description, a.language, a.num_of_pages, a.publisher, a.price, a.date, count(*) as c
+                                   FROM "Product" as a FULL OUTER JOIN "Favorites" as b ON (b.product_id = a.id)
+                                   GROUP BY a.id
+                                   ORDER BY c DESC LIMIT 10;');
         return view('pages/index', ['bookList' => $books, 'bestsellers' => $bestsellers, 'images' => $images]);
     }
 }
