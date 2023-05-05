@@ -3,7 +3,7 @@
         <nav class="d-flex dropdown">
             <button class="btn dropdown-btn me-3" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
                     aria-expanded="false">
-                <img src="images/sidebar.svg" width="40" height="32" alt="Menu"/>
+                <img src="/images/sidebar.svg" width="40" height="32" alt="Menu"/>
             </button>
             <ul id="dropdown-container" class="list-inline text-center dropdown-menu">
                 <li><a class="dropdown-item" href="category?categoryName=bestseller&page=1">Bestsellery</a></li>
@@ -33,10 +33,10 @@
                 <li>
                     <div class="text-lg-right text-center">
                         <a href="/" class="text-black text-decoration-none">
-                            <img class="d-none d-lg-block" src="images/logo/logo-large.svg" width="330" height="48"
+                            <img class="d-none d-lg-block" src="/images/logo/logo-large.svg" width="330" height="48"
                                  alt="Kníhkupectvo Knihomoľ"/>
                             <div class="text-center">
-                                <img class="d-lg-none" src="images/logo/logo-small.svg" width="165" height="48"
+                                <img class="d-lg-none" src="/images/logo/logo-small.svg" width="165" height="48"
                                      alt="Kníhkupectvo Knihomoľ"/>
                             </div>
 
@@ -74,7 +74,7 @@
             <li class="nav-item ms-2 me-2 pt-2">
                 <a href="shopping-cart"
                    class="d-flex text-black text-decoration-none mb-2 justify-content-center mb-md-0"><img
-                        src="images/basket/basket.svg" class="bi me-2" width="40" height="32" alt="Go to cart"/></a>
+                        src="/images/basket/basket.svg" class="bi me-2" width="40" height="32" alt="Go to cart"/></a>
             </li>
         </ul>
     </div>

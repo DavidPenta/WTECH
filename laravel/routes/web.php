@@ -19,9 +19,7 @@ use \App\Http\Controllers\SearchController;
 |
 */
 
-Route::get('/', function () {
-    return view('pages/index');
-});
+Route::get('/',[UserAuthController::class, 'index']);
 
 Route::get('/admin-book-add', [AdminController::class, 'addBook'])
     ->middleware('isLoggedIn')
@@ -31,10 +29,22 @@ Route::get('/admin-book-edit-list', [AdminController::class, 'listBooks'])
     ->middleware('isLoggedIn')
     ->name('admin-book-edit-list');
 
+Route::get('/admin-book-edit/{id}', [AdminController::class, 'editBook'])
+    ->middleware('isLoggedIn')
+    ->name('editBook');
 
-Route::get('/admin-book-edit', function () {
-    return view('pages/admin/admin-book-edit');
-})->middleware('isLoggedIn');
+Route::delete('/admin-book-delete/{id}', [AdminController::class, 'deleteBook'])
+    ->middleware('isLoggedIn')
+    ->name('deleteBook');
+
+Route::post('/saveBook', [AdminController::class, 'saveBook'])
+    ->middleware('isLoggedIn')
+    ->name('saveBook');
+
+Route::post('/admin-book-edit/{id}', [AdminController::class, 'saveEditedBook'])
+    ->middleware('isLoggedIn')
+    ->name('saveEditedBook');
+
 
 Route::get('/shopping-cart', [OrderController::class, 'ShoppingCartRoute']);
 Route::post('/shopping-cart/{id}', [OrderController::class, 'ProductCount'])->name('shoppingCart.quantity');
@@ -68,8 +78,6 @@ Route::post('login-user', [UserAuthController::class, 'loginUser'])
 Route::get('logout-user', [UserAuthController::class, 'logoutUser'])
     ->name('logout-user');
 
-Route::post('/saveBook', [AdminController::class, 'saveBook'])
-    ->name('saveBook');
 
 //Route::get('/search', [ProductsController::class, 'CategoryRoute'])
 //    ->name('search');

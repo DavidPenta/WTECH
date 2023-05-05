@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Address;
+use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 
 class UserAuthController extends Controller
 {
@@ -91,5 +93,14 @@ class UserAuthController extends Controller
             return redirect('/');
         }
         return back();
+    }
+
+    public function index()
+    {
+        $bestsellers = Product::all()->take(3);
+        $images = DB::table('Image')->get();
+        $books = Product::all()->take(10);
+
+        return view('pages/index', ['bookList' => $books, 'bestsellers' => $bestsellers, 'images' => $images]);
     }
 }

@@ -25,7 +25,7 @@
                         <div class="col-1 text-end p-0">
                         <form class="closePart" action="{{ route('shoppingCart.destroy',$orderProduct->id) }}" method="delete">
                             @csrf
-                            <button type="button submit" class="btn-close" aria-label="Close"></button>
+                            <button type="submit" class="btn-close" aria-label="Close"></button>
                         </form>
                         </div>
                     </div>
