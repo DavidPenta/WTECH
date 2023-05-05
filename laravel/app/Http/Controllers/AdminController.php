@@ -55,7 +55,7 @@ class AdminController extends Controller
         $image_name = $product->id .'_main_' . time() . '.' .$request->image1->extension();
         $request->image1->move(public_path('images/book_covers'), $image_name);
         $image1->type = "main";
-        $image1->path = $image_name;
+        $image1->path = "images/book_covers/" . $image_name;
         $image1->save();
 
         $image2= new Image();
@@ -63,10 +63,17 @@ class AdminController extends Controller
         $image_name = $product->id .'_secondary_' . time() . '.' .$request->image2->extension();
         $request->image2->move(public_path('images/book_covers'), $image_name);
         $image2->type = "secondary";
-        $image2->path = $image_name;
+        $image2->path = "images/book_covers/" . $image_name;
         $image2->save();
 
         return redirect('admin-book-add')->with('success', 'Kniha bola pridaná úspešne!');
-
     }
+
+    public function listBooks() {
+        $books= DB::table('Product')->get();
+        $images = DB::table('Image')->get();
+//        dd($images->toArray());
+        return view('pages/admin/admin-book-edit-list', ['books' => $books, 'images' => $images]);
+    }
+
 }

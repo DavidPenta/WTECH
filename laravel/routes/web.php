@@ -27,9 +27,10 @@ Route::get('/admin-book-add', [AdminController::class, 'addBook'])
     ->middleware('isLoggedIn')
     ->name('admin-book-add');
 
-Route::get('/admin-book-edit-list', function () {
-    return view('pages/admin/admin-book-edit-list');
-})->middleware('isLoggedIn')->name('admin-book-edit-list');
+Route::get('/admin-book-edit-list', [AdminController::class, 'listBooks'])
+    ->middleware('isLoggedIn')
+    ->name('admin-book-edit-list');
+
 
 Route::get('/admin-book-edit', function () {
     return view('pages/admin/admin-book-edit');
