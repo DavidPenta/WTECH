@@ -13,14 +13,17 @@ class OrderController extends Controller
     {
         if ($req->session()->has('UserId')) {
             $currentUserId = $req->session()->get('UserId');
-            $order = Order::where('user_id', $currentUserId);
+            $order = Order::where('user_id', $currentUserId)->first();
+            return view('pages/order/shopping-cart', [
+                'order' => $order
+            ]);
+        } else {
+            //cookies order tu bude
+            $order = Order::where('user_id','25')->first();
+            return view('pages/order/shopping-cart', [
+                'order' => $order
+            ]);
         }
-//        $currentUserId = $req;
-//        $order = Order::where('user_id',$currentUserId);
-//        $order = Order::where('user_id','1');
-        return view('pages/order/shopping-cart', [
-            'order' => $order->first()
-        ]);
     }
 
     public function ProductCount(Request $req, $id)
@@ -41,18 +44,21 @@ class OrderController extends Controller
         return redirect('shopping-cart');
     }
 
-    public function OrderRoute()
+    public function OrderRoute(Request $req)
     {
-        if (Auth::check()) {
-            //$currentUserId = Auth::id();
-            //$order = Order::where('user_id',$currentUserId);
-            $order = Order::where('user_id','1');
+        if ($req->session()->has('UserId')) {
+            $currentUserId = $req->session()->get('UserId');
+            $order = Order::where('user_id', $currentUserId)->first();
             return view('pages/order/order', [
-                'order' => $order->first()
+                'order' => $order
             ]);
         }
         else {
-            //tu bude nieco s cookies
+            //cookies order tu bude
+            $order = Order::where('user_id','25')->first();
+            return view('pages/order/order', [
+                'order' => $order
+            ]);
         }
     }
 
@@ -64,10 +70,35 @@ class OrderController extends Controller
             'email' => 'required|email',
             'phone' => 'required|min:10',
             'street' => 'required',
-            'street-number' => 'required',
-            'postcode' => 'required|numeric',
+            'streetNumber' => 'required',
+            'city' => 'required',
+            'postcode' => 'required',
             'deliveryType' => 'required',
             'paymentType' => 'required'
+        ]);
+        if ($req->session()->has('UserId')) {
+            $currentUserId = $req->session()->get('UserId');
+            $user_order = Order::where('user_id', $currentUserId)->first()->id;
+            Log::debug($user_order);
+            $order = Order::findOrFail($user_order);
+        } else {
+            //cookies order tu bude
+            $order = Order::where('user_id','25')->first();
+        }
+        $order->user->first_name = $req->name;
+        $order->user->last_name = $req->surname;
+        $order->user->email = $req->email;
+        $order->user->phone_num = $req->phone;
+        $order->address->address_street = $req->street;
+        $order->address->address_number = $req->streetNumber;
+        $order->address->address_city = $req->city;
+        $order->address->address_postcode = $req->postcode;
+        $order->delivery = $req->deliveryType;
+        $order->payment = $req->paymentType;
+        $order->push();
+
+        return view('pages/order/thank-you', [
+            'order_id' => $order->id
         ]);
     }
 }

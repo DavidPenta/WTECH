@@ -6,7 +6,8 @@
 <div class="container align-middle align-middle">
     <section class="container align-middle pt-4 bg-white shadow-sm rounded-extra mt-5 mb-3 pb-3">
         <h3 class="text-center">Dodacie údaje</h3>
-        <form class="row g-3 m-2" action="{{route('order.complete')}}" method="post">
+        <form class="row g-3 m-2" action="{{route('order.complete')}}" id="order" method="post">
+        @csrf
             <div class="col-12 col-md-6">
                 <label class="ps-3" for="name">Meno</label>
                 <input name="name" type="text" class="form-control" maxlength="64" value="{{ $order->user->first_name }}">
@@ -31,7 +32,7 @@
                     </div>
                     <div class="col-3">
                         <label class="ps-3" for="street-number">Číslo</label>
-                        <input name="street-number" type="text" class="form-control" maxlength="16" value="{{ $order->address->address_number }}">
+                        <input name="streetNumber" type="text" class="form-control" maxlength="16" value="{{ $order->address->address_number }}">
                     </div>
                 </div>
             </div>
@@ -47,13 +48,13 @@
                 <div class="col-md-6 col-12 mb-4 col-md-0">
                     <h2 class="text pb-md-2">Spôsob doručenia</h2>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="deliveryType" id="deliveryType1">
+                        <input class="form-check-input" type="radio" name="deliveryType" id="deliveryType1" value="Doručenie na adresu">
                         <label class="form-check-label" for="deliveryType1">
                             Doručenie na adresu (+3,99€)
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="deliveryType" id="deliveryType2">
+                        <input class="form-check-input" type="radio" name="deliveryType" id="deliveryType2" value="Vyzdvihnutie na predajni">
                         <label class="form-check-label" for="deliveryType2">
                             Vyzdvihnutie na predajni
                         </label>
@@ -62,13 +63,13 @@
                 <div class="col-md-6 col-sm-12">
                     <h2 class="text pb-md-2">Platba</h2>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="paymentType" id="paymentType1">
+                        <input class="form-check-input" type="radio" name="paymentType" id="paymentType1" value="Kartou online">
                         <label class="form-check-label" for="paymentType1">
                             Kartou online
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="paymentType" id="paymentType2">
+                        <input class="form-check-input" type="radio" name="paymentType" id="paymentType2" value="Na dobierku">
                         <label class="form-check-label" for="paymentType2">
                             V hotovosti
                         </label>
@@ -86,7 +87,7 @@
         </div>
 
         <div class="d-flex justify-content-center justify-content-md-end mt-1 ms-sm-4 me-sm-4 float-end">
-            <a href="thank-you" class="btn btn-success btn-xxl" role="button">Objednať</a>
+            <button type="button submit" class="btn btn-success btn-xxl" role="button" form="order">Objednať</a>
         </div>
     </section>
 </div>

@@ -36,20 +36,12 @@ Route::get('/admin-book-edit', function () {
     return view('pages/admin/admin-book-edit');
 })->middleware('isLoggedIn');
 
-Route::get('/order', function () {
-    return view('pages/order/order');
-});
-
 Route::get('/shopping-cart', [OrderController::class, 'ShoppingCartRoute']);
-Route::put('/shopping-cart/{id}', [OrderController::class, 'ProductCount'])->name('shoppingCart.quantity');
+Route::post('/shopping-cart/{id}', [OrderController::class, 'ProductCount'])->name('shoppingCart.quantity');
 Route::delete('/shopping-cart/{id}', [OrderController::class, 'DeleteProduct'])->name('shoppingCart.destroy');
 
 Route::get('/order', [OrderController::class, 'OrderRoute']);
 Route::post('/order', [OrderController::class, 'CompleteOrder'])->name('order.complete');
-
-Route::get('/thank-you', function () {
-    return view('pages/order/thank-you');
-});
 
 Route::get('/category', [ProductsController::class, 'CategoryRoute'])
     ->name('category');
