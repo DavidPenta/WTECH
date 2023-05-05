@@ -6,17 +6,13 @@
     <div class="container">
         <nav class="row">
             <div class="col-6 ps-4">
-                <a href="/admin-book-add">
-                    <button type="button" class="btn btn-light btn-xl mt-4 rounded-extra" id="pridanie">
-                        Pridanie knihy
-                    </button>
+                <a href="/admin-book-add" type="button" class="btn btn-light btn-xl mt-4 rounded-extra">
+                    Pridanie knihy
                 </a>
             </div>
             <div class="col-6">
-                <a href="/admin-book-edit-list">
-                    <button type="button" class="btn btn-light btn-xl mt-4 rounded-extra float-end me-2" id="upravenie">
-                        Upravenie kníh
-                    </button>
+                <a href="/admin-book-edit-list" type="button" class="btn btn-light btn-xl mt-4 rounded-extra float-end me-2" id="upravenie">
+                    Upravenie kníh
                 </a>
             </div>
         </nav>
@@ -102,12 +98,12 @@
                     </div>
                     <div class="row">
                         <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
-                            <label for="image1">Obrázok č. 1</label>
+                            <label class="ps-3" for="image1">Hlavný obrázok</label>
                             <input type="file" class="form-control" id="image1" name="image1" required/>
                             <span class="text-danger"> @error('image1') {{$message}} @enderror</span>
                         </div>
                         <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
-                            <label for="image2">Obrázok č. 2</label>
+                            <label class="ps-3" for="image2">Vedľajší obrázok</label>
                             <input type="file" class="form-control" id="image2" name="image2" required/>
                             <span class="text-danger"> @error('image2') {{$message}} @enderror</span>
                         </div>

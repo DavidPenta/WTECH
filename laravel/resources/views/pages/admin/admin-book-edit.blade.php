@@ -3,80 +3,123 @@
     <link rel="stylesheet" href="/styles/style.css">
 @stop
 @section('content')
-<div class="container">
-    <nav class="row">
-        <div class="col-6 ps-4">
-            <a href="/admin-book-add">
-                <button type="button" class="btn btn-light btn-xl mt-4 rounded-extra" id="pridanie">Pridanie knihy</button>
-            </a>
-        </div>
-        <div class="col-6">
-            <a href="/admin-book-edit-list">
-                <button type="button" class="btn btn-light btn-xl mt-4 rounded-extra float-end me-2" id="upravenie">Upravenie
-                    kníh
+    <div class="container">
+        <nav class="row">
+            <div class="col-6 ps-4">
+                <a href="/admin-book-add" type="button" class="btn btn-light btn-xl mt-4 rounded-extra">
+                    Pridanie knihy
+                </a>
+            </div>
+            <div class="col-6">
+                <a href="/admin-book-edit-list" type="button" class="btn btn-light btn-xl mt-4 rounded-extra float-end me-2" id="upravenie">
+                    Upravenie kníh
+                </a>
+            </div>
+        </nav>
+        @if (Session::has('success'))
+            <div class="alert alert-success text-center w-100 mt-5 mx-auto">
+                <strong>{{Session::get('success')}}</strong>
+            </div>
+        @endif
+        @if (Session::has('fail'))
+            <div class="alert alert-danger text-center w-100 mt-5 mx-auto">
+                <strong>{{Session::get('fail')}}</strong>
+            </div>
+        @endif
+        <section class="container align-middle align-middle">
+            <form class="row g-3" method="post" action="{{route('saveEditedBook', $book->id)}}" enctype="multipart/form-data">
+                @csrf
+                <div class="container align-middle pt-4 bg-white shadow-sm rounded-extra mt-4 pb-3">
+                    <h1 class="text-center pb-3 pt-3">Upravenie knihy</h1>
+                    <div class="row">
+                        <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
+                            <label class="ps-3" for="name">Názov knihy</label>
+                            <input id="name" type="text" class="form-control" name="name" value="{{$book->name}}"
+                                   required/>
+                            <span class="text-danger"> @error('name') {{$message}} @enderror</span>
+                        </div>
+                        <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
+                            <label class="ps-3" for="author">Autor</label>
+                            <input id="author" type="text" class="form-control" name="author" value="{{$book->author}}"
+                                   required/>
+                            <span class="text-danger"> @error('author') {{$message}} @enderror</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
+                            <label class="ps-3" for="language">Jazyk</label>
+                            <select class="form-control" id="language" name="language">
+                                @foreach($languages as $language)
+                                    <option>{{$language}}</option>
+                                @endforeach
+                            </select>
+                            <span class="text-danger"> @error('language') {{$message}} @enderror</span>
+                        </div>
+                        <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
+                            <label class="ps-3" for="publisher">Vydavateľstvo</label>
+                            <select class="form-control" id="publisher" name="publisher">
+                                @foreach($publishers as $publisher)
+                                    <option>{{$publisher}}</option>
+                                @endforeach
+                            </select>
+                            <span class="text-danger"> @error('publisher') {{$message}} @enderror</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
+                            <label class="ps-3" for="category">Kategória</label>
+                            <select class="form-control" id="category" name="category">
+                                @foreach($categories as $category)
+                                    <option value="{{$category->id}}">{{$category->full}}</option>
+                                @endforeach
+                            </select>
+                            <span class="text-danger"> @error('category') {{$message}} @enderror</span>
+                        </div>
+                        <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
+                            <label class="ps-3" for="price">Cena</label>
+                            <input id="price" type="number" step="0.01" class="form-control" name="price"
+                                   value="{{$book->price}}" required/>
+                            <span class="text-danger"> @error('price') {{$message}} @enderror</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
+                            <label class="ps-3" for="date">Dátum vydania</label>
+                            <input id="date" type="date" class="form-control" name="date" value="{{$book->date}}"
+                                   required/>
+                            <span class="text-danger"> @error('date') {{$message}} @enderror</span>
+                        </div>
+                        <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
+                            <label class="ps-3" class="ps-3" for="num_of_pages">Počet strán</label>
+                            <input id="num_of_pages" type="number" class="form-control" name="num_of_pages"
+                                   value="{{$book->num_of_pages}}" required/>
+                            <span class="text-danger"> @error('num_of_pages') {{$message}} @enderror</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
+                            <label class="ps-3" for="image1">Hlavný obrázok</label>
+                            <input type="file" class="form-control" id="image1" name="image1"/>
+                            <span class="text-danger"> @error('image1') {{$message}} @enderror</span>
+                        </div>
+                        <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
+                            <label for="image2">Vedľajší obrázok</label>
+                            <input type="file" class="form-control" id="image2" name="image2"/>
+                            <span class="text-danger"> @error('image2') {{$message}} @enderror</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 pt-4 ps-4 pe-4 pb-4">
+                            <label class="ps-3" for="description">Popis knihy</label>
+                            <textarea id="description" class="form-control" rows="5" name="description" required>{{ $book->description }}</textarea>
+                            <span class="text-danger"> @error('description') {{$message}} @enderror</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success btn-xl mt-4 mb-5 rounded-extra float-end me-5" id="edit">
+                    Upraviť knihu
                 </button>
-            </a>
-        </div>
-    </nav>
-    <section class="container align-middle align-middle">
-        <div class="container align-middle pt-4 bg-white shadow-sm rounded-extra mt-4 pb-3">
-            <h3 class="text-center pb-5">Upravenie knihy</h3>
-            <form class="row g-3">
-                <div class="row">
-                    <div class="col ps-5"><label class="ps-3" for="nazov">Názov knihy</label><input id="nazov"
-                                                                                                    type="text"
-                                                                                                    class="form-control"/>
-                    </div>
-                    <div class="col"><label class="ps-3" for="autor">Autor</label><input id="autor" type="text"
-                                                                                         class="form-control"/></div>
-                </div>
-                <div class="row pt-4">
-                    <div class="col ps-5">
-                        <label class="ps-3" for="kategoria">Kategória</label>
-                        <select class="form-control" id="kategoria">
-                            <option>Bestsellery</option>
-                            <option>Novinky</option>
-                            <option>Young Adult</option>
-                            <option>Romantika</option>
-                            <option>Krimi a detektívky</option>
-                            <option>Trilery</option>
-                            <option>Dobrodružne</option>
-                            <option>Rodina</option>
-                            <option>Fantasy</option>
-                            <option>Sci-fi</option>
-                            <option>Romány a novely</option>
-                            <option>Biografie</option>
-                            <option>Poézia</option>
-                            <option>Životný štýl</option>
-                            <option>Deti a mládež</option>
-                            <option>Náučná a odborná literatúra</option>
-                        </select>
-                    </div>
-                    <div class="col"><label class="ps-3" for="cena">Cena</label><input id="cena" type="text"
-                                                                                       class="form-control"/></div>
-                </div>
-                <div class=""></div>
-                <div class="row pt-4">
-                    <div class="col ps-5"><label class="ps-3" for="datum">Dátum vydania</label><input id="datum"
-                                                                                                      type="text"
-                                                                                                      class="form-control"/>
-                    </div>
-                    <div class="col"><label for="obrazok1">Obrázok č. 1</label><input type="file" class="form-control"
-                                                                                      id="obrazok1"/></div>
-                </div>
-                <div class="row pt-4 pb-5">
-                    <div class="col ps-5"><label class="ps-3" for="popis">popis knihy</label><textarea id="popis"
-                                                                                                       class="form-control"
-                                                                                                       rows="5"></textarea>
-                    </div>
-                    <div class="col"><label for="obrazok1">Obrázok č. 2</label><input type="file" class="form-control"
-                                                                                      id="obrazok2"/></div>
-                </div>
             </form>
-        </div>
-        <button type="button" class="btn btn-success btn-xl mt-4 mb-5 rounded-extra float-end me-5" id="upravit">Upraviť
-            knihu
-        </button>
-    </section>
-</div>
+        </section>
+    </div>
 @stop

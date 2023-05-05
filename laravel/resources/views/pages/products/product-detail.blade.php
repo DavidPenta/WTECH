@@ -23,7 +23,7 @@
                         {{ $bookData->num_of_pages }} strán
                     @endif
                 </span>
-                <span class="d-block fs-6 mt-5 text-black">{{ $bookData->describtion }}</span>
+                <span class="d-block fs-6 mt-5 pe-0 pe-md-5 text-black">{{ $bookData->description }}</span>
                 <span class="d-block fs-1 mt-5 text-success text-black"><b>{{ number_format((float)$bookData->price, 2, '.', '') }}€</b></span>
             </div>
         </div>
