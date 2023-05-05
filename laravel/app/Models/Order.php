@@ -18,4 +18,8 @@ class Order extends Model
     public function orderProducts() {
         return $this->hasMany('App\Models\OrderProduct');
     }
+
+    public function address() {
+        return $this->belongsTo('App\Models\Address');
+    }
 }

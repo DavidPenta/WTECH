@@ -11,12 +11,16 @@ class OrderController extends Controller
 {
     public function ShoppingCartRoute()
     {
-        //$currentUserId = Auth::id();
-        //$order = Order::where('user_id',$currentUserId);
-        $order = Order::where('user_id','1');
-        return view('pages/order/shopping-cart', [
-            'order' => $order->first()
-        ]);
+        if (Auth::check()) {
+            //$currentUserId = Auth::id();
+            //$order = Order::where('user_id',$currentUserId);
+            $order = Order::where('user_id','1');
+            return view('pages/order/shopping-cart', [
+                'order' => $order->first()
+            ]);
+        } else {
+            //tu bude nieco s cookies
+        }
     }
 
     public function ProductCount(Request $req, $id)
@@ -35,5 +39,35 @@ class OrderController extends Controller
         $productCount = OrderProduct::find($id);
         $productCount->delete();
         return redirect('shopping-cart');
+    }
+
+    public function OrderRoute()
+    {
+        if (Auth::check()) {
+            //$currentUserId = Auth::id();
+            //$order = Order::where('user_id',$currentUserId);
+            $order = Order::where('user_id','1');
+            return view('pages/order/order', [
+                'order' => $order->first()
+            ]);
+        }
+        else {
+            //tu bude nieco s cookies
+        }
+    }
+
+    public function CompleteOrder(Request $req)
+    {
+        $req->validate([
+            'name' => 'required',
+            'surname' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required|min:10',
+            'street' => 'required',
+            'street-number' => 'required',
+            'postcode' => 'required|numeric',
+            'deliveryType' => 'required',
+            'paymentType' => 'required'
+        ]);
     }
 }
