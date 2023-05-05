@@ -10,4 +10,5 @@ class Favorites extends Model
     use HasFactory;
 
     protected $table = 'Favorites';
+    public $timestamps = false;
 }
