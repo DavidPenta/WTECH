@@ -1,6 +1,17 @@
 @extends('layouts.default')
 @section('head')
     <link rel="stylesheet" href="/styles/style.css">
+
+    <script>
+    $(document).ready(function(){
+        $("#deliveryType1").click(function(){
+            $("#cena").text("Celková suma : {{ $order->value + 3 }}€");
+        });
+        $("#deliveryType2").click(function(){
+            $("#cena").text("Celková suma : {{ $order->value }}€");
+        });
+    });
+    </script>
 @stop
 @section('content')
 <div class="container align-middle align-middle">
@@ -77,7 +88,7 @@
                 </div>
             </div>
             <div class="row">
-                <span class="fs-3 text-black text-end">Celková suma : {{ $order->value }}€</span>
+                <span id="cena" class="fs-3 text-black text-end">Celková suma : {{ $order->value }}€</span>
             </div>
         </form>
     </section>

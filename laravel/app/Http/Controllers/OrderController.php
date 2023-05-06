@@ -23,7 +23,12 @@ class OrderController extends Controller
     {
         if ($req->session()->has('UserId')) {
             $currentUserId = $req->session()->get('UserId');
-            $user_order = Order::where('user_id', $currentUserId)->first()->id;
+            $user_order = Order::where('user_id', $currentUserId)->where('state', 'draft')->first();
+            if(is_null($user_order)) {
+                return view('pages/order/shopping-cart', [
+                    'order' => null
+                ]);
+            }
             $order = Order::findOrFail($user_order);
             $this->CalculateValue($order);
             return view('pages/order/shopping-cart', [
@@ -32,6 +37,7 @@ class OrderController extends Controller
         } else {
             //cookies order tu bude
             $order = Order::where('user_id','25')->first();
+            $this->CalculateValue($order);
             return view('pages/order/shopping-cart', [
                 'order' => $order
             ]);
@@ -40,11 +46,9 @@ class OrderController extends Controller
 
     public function ProductCount(Request $req, $id)
     {
-        Log::debug('quantity');
         $req->validate([
             'quantity' => ['required', 'integer', 'min:0'],
         ]);
-        Log::debug('validated');
         $productCount = OrderProduct::find($id);
         $productCount->quantity = $req->quantity;
         $productCount->save();
@@ -54,7 +58,6 @@ class OrderController extends Controller
 
     public function DeleteProduct(Request $req, $id)
     {
-        Log::debug('delete');
         $productCount = OrderProduct::find($id);
         $productCount->delete();
         $this->CalculateValue($productCount->order);
@@ -111,8 +114,12 @@ class OrderController extends Controller
         $order->address->address_postcode = $req->postcode;
         $order->delivery = $req->deliveryType;
         $order->payment = $req->paymentType;
+        if($req->deliveryType == 'Doručenie na adresu')
+        {
+            $order->value += 3.99;
+        }
+        $order->state = 'completed';
         $order->push();
-
         return view('pages/order/thank-you', [
             'order_id' => $order->id
         ]);
