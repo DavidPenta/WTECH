@@ -1,12 +1,7 @@
 @extends('layouts.default')
 @section('head')
     <link rel="stylesheet" href="/styles/style.css">
-    <script>
-        function check(price) {
-            newPrice = {{ $order->value }} + price
-            document.getElementById("total").textContent = "Celková suma :" + newPrice + "€";
-        }
-    </script>
+    <script src="/scripts/order-script.js"></script>
 @stop
 @section('content')
 <div class="container align-middle align-middle">
@@ -54,13 +49,13 @@
                 <div class="col-md-6 col-12 mb-4 col-md-0">
                     <h2 class="text pb-md-2">Spôsob doručenia</h2>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="deliveryType" id="deliveryType1" value="Doručenie na adresu" onclick="check(3.99)">
+                        <input class="form-check-input" type="radio" name="deliveryType" id="deliveryType1" value="Doručenie na adresu" onclick="check({{ $order->value }}, 3.99)">
                         <label class="form-check-label" for="deliveryType1">
                             Doručenie na adresu (+3,99€)
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="deliveryType" id="deliveryType2" value="Vyzdvihnutie na predajni" onclick="check(0)">
+                        <input class="form-check-input" type="radio" name="deliveryType" id="deliveryType2" value="Vyzdvihnutie na predajni" onclick="check({{ $order->value }}, 0)">
                         <label class="form-check-label" for="deliveryType2">
                             Vyzdvihnutie na predajni
                         </label>
