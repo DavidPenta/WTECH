@@ -6,34 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Image;
 use App\Models\Favorites;
-
-class BookMock
-{
-    public int $id;
-    public string $name;
-    public string $authorName;
-    public string $publisherName;
-    public int $pageCount;
-    public string $description;
-    public float $price;
-
-    public function __construct(int    $id,
-                                string $name,
-                                string $authorName,
-                                string $publisherName,
-                                int    $pageCount,
-                                string $description,
-                                float  $price)
-    {
-        $this->id = $id;
-        $this->name = $name;
-        $this->authorName = $authorName;
-        $this->publisherName = $publisherName;
-        $this->pageCount = $pageCount;
-        $this->description = $description;
-        $this->price = $price;
-    }
-}
+use App\Models\Order;
+use App\Models\OrderProduct;
 
 class ProductsController extends Controller
 {
@@ -82,9 +56,36 @@ class ProductsController extends Controller
         'de'
     ];
 
-    public function ParseShoppingCartCookie(string $value)
+    public function SerializeShoppingCartCookie(array $value)
     {
-        // TODO
+        $results = [];
+        \Log::debug($value);
+        foreach ($value as $bookId => $bookCount)
+        {
+            array_push($results, $bookId.'='.$bookCount);
+        }
+        $result = implode(';', $results);
+        return $result;
+    }
+
+    public function DeserializeShoppingCartCookie(string $value)
+    {
+        $result = [];
+        if ($value == '')
+        {
+            return $result;
+        }
+        $books = explode(';', $value);
+        \Log::debug($value);
+        \Log::debug($books);
+        foreach ($books as $bookData)
+        {
+            $idAndCount = explode('=', $bookData);
+            $bookId = $idAndCount[0];
+            $bookCount = $idAndCount[1];
+            $result[$bookId] = $bookCount;
+        }
+        return $result;
     }
 
     public function CategoryRoute(Request $req)
@@ -172,7 +173,7 @@ class ProductsController extends Controller
             ]);
         }
 
-        $userId = $req->session()->has('UserId') ?  $req->session()->get('UserId') : '';
+        $userId = $req->session()->get('UserId');
         $isFavorite = Favorites::where('product_id', '=', $productId)
             ->where('user_id', '=', $userId)
             ->get()
@@ -199,10 +200,13 @@ class ProductsController extends Controller
         }
         else
         {
+            $productId = $req->{'product-id'};
+            $images = Image::where('product_id', $productId)->get();
             $bookData = Product::with('images')->find($productId);
             return view('pages/products/product-detail', [
                 'bookData' => $bookData,
-                'isFavorite' => false
+                'isFavorite' => false,
+                'images' => $images
             ]);
         }
     }
@@ -210,17 +214,19 @@ class ProductsController extends Controller
     public function ProductDetailFavoriteRoute(Request $req)
     {
         $productId = $req->{'product-id'};
+        $images = Image::where('product_id', $productId)->get();
         $bookData = Product::with('images')->find($productId);
         \Log::debug($productId);
         if (!$req->session()->has('UserId'))
         {
             return view('pages/products/product-detail', [
                 'bookData' => $bookData,
-                'isFavorite' => false
+                'isFavorite' => false,
+                'images' => $images
             ]);
         }
 
-        $userId = $req->session()->has('UserId') ?  $req->session()->get('UserId') : '';
+        $userId = $req->session()->get('UserId');
         $favorite = Favorites::where('product_id', '=', $productId)->where('user_id', '=', $userId);
 
         if (count($favorite->get()) > 0)
@@ -240,17 +246,83 @@ class ProductsController extends Controller
         \Log::debug($isFavorite);
         return view('pages/products/product-detail', [
             'bookData' => $bookData,
-            'isFavorite' => $isFavorite
+            'isFavorite' => $isFavorite,
+            'images' => $images
         ]);
     }
 
     public function ProductDetailAddToCartRoute(Request $req)
     {
         $productId = $req->{'product-id'};
-        $userId = $req->session()->has('UserId') ?  $req->session()->get('UserId') : '';
+        $images = Image::where('product_id', $productId)->get();
+        $bookData = Product::with('images')->find($productId);
+
+        if (!$req->session()->has('UserId'))
+        {
+            $shoppingCartFromCookies = $req->session()->has('ShoppingCart') ? $req->session()->get('ShoppingCart') : '';
+            $shoppingCart = self::DeserializeShoppingCartCookie($shoppingCartFromCookies);
+            if (array_key_exists($productId, $shoppingCart))
+            {
+                $shoppingCart[$productId]++;
+            }
+            else
+            {
+                $shoppingCart[$productId] = 1;
+            }
+            $shoppingCartSerialized = self::SerializeShoppingCartCookie($shoppingCart);
+            $req->session()->put('ShoppingCart', $shoppingCartSerialized);
+            return view('pages/products/product-detail', [
+                'bookData' => $bookData,
+                'isFavorite' => false,
+                'images' => $images
+            ]);
+        }
+
+        $userId = $req->session()->get('UserId');
+        $draftOrders = Order::where('user_id', '=', $userId)
+            ->where('state', '=', 'draft')
+            ->get();
+        
+        \Log::debug($draftOrders);
+        if (count($draftOrders) > 0)
+        {
+            $draftOrder = $draftOrders[0];
+        }
+        else
+        {
+            $draftOrder = new Order;
+            $draftOrder->state = 'draft';
+            $draftOrder->user_id = $userId;
+            $draftOrder->save();
+        }
+
+        $orderProducts = OrderProduct::where('order_id', '=', $draftOrder->id)
+            ->where('product_id', '=', $productId);
+
+        \Log::debug($orderProducts->get());
+        if ($orderProducts->count() > 0)
+        {
+            $orderProduct = $orderProducts->first();
+        }
+        else
+        {
+            $orderProduct = new OrderProduct;
+            $orderProduct->order_id = $draftOrder->id;
+            $orderProduct->product_id = $productId;
+            $orderProduct->quantity = 0;
+        }
+        $orderProduct->quantity++;
+        $orderProduct->save();
+
+        $isFavorite = Favorites::where('product_id', '=', $productId)
+            ->where('user_id', '=', $userId)
+            ->get()
+            ->count() > 0;
+
         return view('pages/products/product-detail', [
             'bookData' => $bookData,
-            'isFavorite' => $isFavorite
+            'isFavorite' => $isFavorite,
+            'images' => $images
         ]);
     }
 }
