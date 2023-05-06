@@ -11,7 +11,8 @@
                 </a>
             </div>
             <div class="col-6">
-                <a href="/admin-book-edit-list" type="button" class="btn btn-light btn-xl mt-4 rounded-extra float-end me-2 active">
+                <a href="/admin-book-edit-list" type="button"
+                   class="btn btn-light btn-xl mt-4 rounded-extra float-end me-2 active">
                     Upravenie kníh
                 </a>
             </div>
@@ -27,7 +28,8 @@
             </div>
         @endif
         <section class="container align-middle align-middle">
-            <form class="row g-3" method="post" action="{{route('saveEditedBook', $book->id)}}" enctype="multipart/form-data">
+            <form class="row g-3" method="post" action="{{route('saveEditedBook', $book->id)}}"
+                  enctype="multipart/form-data">
                 @csrf
                 <div class="container align-middle pt-4 bg-white shadow-sm rounded-extra mt-4 pb-3">
                     <h1 class="text-center pb-3 pt-3">Upravenie knihy</h1>
@@ -98,28 +100,42 @@
                     </div>
                     <div class="row">
                         <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
-                            <label class="ps-3" for="image1">Hlavný obrázok</label>
+                            <span class="ps-3">Hlavný obrázok</span>
                             <img
                                 src="{{ $images->whereIn('product_id', $book->id)->whereIn('type', 'main')->first()->path  ?? '/images/book_covers/error.png'  }}"
-                                class="img-fluid book-cover" alt="{{$images->whereIn('product_id', $book->id)->whereIn('type', 'main')->first()->path}}">
-                            <input type="file" class="form-control" id="image1" name="image1"/>
+                                class="img-fluid book-cover pt-2"
+                                alt="Book cover">
+                            <div class="w-100 pt-2 ps-3">
+                                <input class="form-check-input" type="checkbox" value="1" id="img1_del_checkbox" name="img1_del_checkbox">
+                                <label class="form-check-label" for="img1_del_checkbox">
+                                    Vymazať hlavný obrázok
+                                </label>
+                            </div>
+                            <label class="ps-3 pt-4" for="image2">Nahradiť hlavný obrázok</label>
+                            <input type="file" class="form-control mt-2" id="image1" name="image1"/>
                             <span class="text-danger"> @error('image1') {{$message}} @enderror</span>
-                            <checkbox
-
                         </div>
                         <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
-                            <label for="image2">Vedľajší obrázok</label>
+                            <span class="ps-3">Vedľajší obrázok</span>
                             <img
                                 src="{{ $images->whereIn('product_id', $book->id)->whereIn('type', 'secondary')->first()->path  ?? '/images/book_covers/error.png'  }}"
-                                class="img-fluid book-cover" alt="Book cover">
-                            <input type="file" class="form-control" id="image2" name="image2"/>
+                                class="img-fluid book-cover pt-2" alt="Book cover">
+                            <div class="w-100 pt-2 ps-3">
+                                <input class="form-check-input" type="checkbox" value="1" id="img2_del_checkbox" name="img2_del_checkbox">
+                                <label class="form-check-label" for="img2_del_checkbox">
+                                    Vymazať vedľajší obrázok
+                                </label>
+                            </div>
+                            <label class="ps-3 pt-4" for="image2">Nahradiť vedľajší obrázok</label>
+                            <input type="file" class="form-control mt-2" id="image2" name="image2"/>
                             <span class="text-danger"> @error('image2') {{$message}} @enderror</span>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12 pt-4 ps-4 pe-4 pb-4">
                             <label class="ps-3" for="description">Popis knihy</label>
-                            <textarea id="description" class="form-control" rows="5" name="description" required>{{ $book->description }}</textarea>
+                            <textarea id="description" class="form-control" rows="5" name="description"
+                                      required>{{ $book->description }}</textarea>
                             <span class="text-danger"> @error('description') {{$message}} @enderror</span>
                         </div>
                     </div>
