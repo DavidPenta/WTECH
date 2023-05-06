@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Favorites;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Address;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class UserAuthController extends Controller
 {
@@ -100,14 +102,32 @@ class UserAuthController extends Controller
         return back();
     }
 
-    public function index()
+    private function getBooksOrderedByFavorite()
     {
-        $bestsellers = Product::inRandomOrder()->where('category_id','=', 1)->take(5)->get();
-        $images = Image::all();
-        $books = DB::select('SELECT a.id, a.name, a.author, a.description, a.language, a.num_of_pages, a.publisher, a.price, a.date, count(*) as c
+    return DB::select('SELECT a.id, a.name, a.author, a.description, a.language, a.num_of_pages, a.publisher, a.price, a.date, count(*) as c
                                    FROM "Product" as a FULL OUTER JOIN "Favorites" as b ON (b.product_id = a.id)
                                    GROUP BY a.id
                                    ORDER BY c DESC LIMIT 10;');
-        return view('pages/index', ['bookList' => $books, 'bestsellers' => $bestsellers, 'images' => $images]);
+    }
+    public function index(Request $request)
+    {
+        $images = Image::all();
+        $favorite_bool = false;
+        if ($request->session()->has('UserId')){
+            $favorites = Favorites::where('user_id', '=', $request->session()->get('UserId'))->get();
+            $books = Product::whereIn('id', $favorites->pluck('product_id'))->get();
+            $favorite_bool = true;
+        }
+        else {
+            $books = $this->getBooksOrderedByFavorite();
+        }
+        $number_of_bestsellers = round(count($books) / 2);
+        if ($number_of_bestsellers == 0) {
+            $favorite_bool = false;
+            $books = $this->getBooksOrderedByFavorite();
+            $number_of_bestsellers = 5;
+        }
+        $bestsellers = Product::inRandomOrder()->where('category_id','=', 1)->take($number_of_bestsellers)->get();
+        return view('pages/index', ['bookList' => $books, 'bestsellers' => $bestsellers, 'images' => $images, 'favorites' => $favorite_bool]);
     }
 }

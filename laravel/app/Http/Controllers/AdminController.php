@@ -56,7 +56,7 @@ class AdminController extends Controller
         $image_name = $product->id .'_main_' . time() . '.' .$request->image1->extension();
         $request->image1->move(public_path('images/book_covers'), $image_name);
         $image1->type = "main";
-        $image1->path = "images/book_covers/" . $image_name;
+        $image1->path = "/images/book_covers/" . $image_name;
         $image1->save();
 
         $image2= new Image();
@@ -64,7 +64,7 @@ class AdminController extends Controller
         $image_name = $product->id .'_secondary_' . time() . '.' .$request->image2->extension();
         $request->image2->move(public_path('images/book_covers'), $image_name);
         $image2->type = "secondary";
-        $image2->path = "images/book_covers/" . $image_name;
+        $image2->path = "/images/book_covers/" . $image_name;
         $image2->save();
 
         return redirect('admin-book-add')->with('success', 'Kniha bola pridaná úspešne!');
@@ -95,6 +95,7 @@ class AdminController extends Controller
 
     public function editBook($id){
         $book = Product::find($id);
+        $images = Image::where('product_id', $book->id)->get();
 
         $categories = DB::table('Category')->get();
         $languages = explode(",",trim(DB::select("SELECT enum_range(NULL::language)")[0]->enum_range, "{}"));
@@ -104,7 +105,8 @@ class AdminController extends Controller
             'book' => $book,
             'categories' => $categories,
             'languages' => $languages,
-            'publishers' => $publishers
+            'publishers' => $publishers,
+            'images' => $images
         ]);
     }
 
@@ -133,6 +135,24 @@ class AdminController extends Controller
         $product->description = $request->description;
         $product->save();
 
+        if ($request->img1_del_checkbox == "1"){
+            $image1_del = Image::where('product_id', $id)->where('type', 'main')->first();
+            if ($image1_del != null) {
+                $image_path = public_path($image1_del->path);
+                File::delete($image_path);
+                $image1_del->delete();
+            }
+        }
+
+        if ($request->img2_del_checkbox == "1"){
+            $image2_del = Image::where('product_id', $id)->where('type', 'secondary')->first();
+            if ($image2_del != null) {
+                $image_path = public_path($image2_del->path);
+                File::delete($image_path);
+                $image2_del->delete();
+            }
+        }
+
         if ($request->image1 != null) {
             $image1 = Image::where('product_id', $id)->where('type', 'main')->first();
             if ($image1 == null) {
@@ -147,7 +167,7 @@ class AdminController extends Controller
             }
             $image_name = $product->id .'_main_' . time() . '.' .$request->image1->extension();
             $request->image1->move(public_path('images/book_covers'), $image_name);
-            $image1->path = "images/book_covers/" . $image_name;
+            $image1->path = "/images/book_covers/" . $image_name;
             $image1->save();
         }
 
@@ -165,7 +185,7 @@ class AdminController extends Controller
             }
             $image_name = $product->id .'_secondary_' . time() . '.' .$request->image2->extension();
             $request->image2->move(public_path('images/book_covers'), $image_name);
-            $image2->path = "images/book_covers/" . $image_name;
+            $image2->path = "/images/book_covers/" . $image_name;
             $image2->save();
         }
 

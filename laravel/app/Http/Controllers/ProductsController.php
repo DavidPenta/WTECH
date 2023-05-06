@@ -111,16 +111,16 @@ class ProductsController extends Controller
         $bookOrderingProperty = $categoryOrder == 'new' || $categoryOrder == 'old' ? 'date' : ($categoryOrder == 'cheap' || $categoryOrder == 'expensive' ? 'price' : ($categoryOrder == 'short' || $categoryOrder == 'long' ? 'num_of_pages' : 'id'));
         $bookOrderingDirection = $categoryOrder == 'old' || $categoryOrder == 'cheap' || $categoryOrder == 'short' ? 'asc' : 'desc';
         if (request('search')) {
-            $bookCount = Product::count();
-            $books = Product::with('mainImage')
+            $allBooks = Product::with('mainImage')
                 ->where('name','LIKE','%'.$searchQuery.'%')
                 ->orWhere('author','LIKE','%'.$searchQuery.'%')
                 ->orWhere('description','LIKE','%'.$searchQuery.'%')
                 ->where('price', '>',$minPrice)
                 ->where('price', '<', $maxPrice)
                 ->where('num_of_pages', '>', $minPages)
-                ->where('num_of_pages', '<', $maxPages)
-                ->orderBy($bookOrderingProperty, $bookOrderingDirection)
+                ->where('num_of_pages', '<', $maxPages);
+            $bookCount = $allBooks->count();
+            $books = $allBooks->orderBy($bookOrderingProperty, $bookOrderingDirection)
                 ->skip(self::$defaultValues['pageSize'] * ($pageNumber - 1))
                 ->take(self::$defaultValues['pageSize'])
                 ->get();
@@ -128,13 +128,13 @@ class ProductsController extends Controller
             $maxPageNumber = ceil($bookCount / self::$defaultValues['pageSize']);
             $categoryName = "Vyhľadávanie: " . $searchQuery;
         } else {
-            $bookCount = Product::count();
-            $books = Product::with('mainImage')
+            $allBooks = Product::with('mainImage')
                 ->where('price', '>',$minPrice)
                 ->where('price', '<', $maxPrice)
                 ->where('num_of_pages', '>', $minPages)
-                ->where('num_of_pages', '<', $maxPages)
-                ->orderBy($bookOrderingProperty, $bookOrderingDirection)
+                ->where('num_of_pages', '<', $maxPages);
+            $bookCount = $allBooks->count();
+            $books = $allBooks->orderBy($bookOrderingProperty, $bookOrderingDirection)
                 ->skip(self::$defaultValues['pageSize'] * ($pageNumber - 1))
                 ->take(self::$defaultValues['pageSize'])
                 ->get();
@@ -160,12 +160,15 @@ class ProductsController extends Controller
     public function ProductDetailRoute(Request $req)
     {
         $productId = $req->{'product-id'};
+        $images = Image::where('product_id', $productId)->get();
         $bookData = Product::with('images')->find($productId);
+
         if (!$req->session()->has('UserId'))
         {
             return view('pages/products/product-detail', [
                 'bookData' => $bookData,
-                'isFavorite' => false
+                'isFavorite' => false,
+                'images' => $images
             ]);
         }
 
@@ -174,13 +177,14 @@ class ProductsController extends Controller
             ->where('user_id', '=', $userId)
             ->get()
             ->count() > 0;
-        \Log::debug($bookData);
-        \Log::debug($isFavorite);
+
         return view('pages/products/product-detail', [
             'bookData' => $bookData,
-            'isFavorite' => $isFavorite
+            'isFavorite' => $isFavorite,
+            'images' => $images
         ]);
     }
+
 
     public function ProductDetailPostRoute(Request $req)
     {

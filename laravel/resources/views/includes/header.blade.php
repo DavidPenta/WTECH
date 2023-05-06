@@ -48,7 +48,7 @@
     <div id="nav-right" class="text-right pt-2">
         <ul class="navbar-nav">
             <li class="nav-item ms-2 me-2 pt-1">
-                <form role="search" action="{{route('category')}}" method="get">
+                <form role="search" action="{{route('category', ['page' => 1])}}" method="get">
                     <input name="search" type="search" class="align-bottom form-control form-control-dark text-bg-white" size="30"
                            placeholder="Hľadať podľa názvu, autora..." aria-label="Search">
                 </form>

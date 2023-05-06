@@ -9,3 +9,7 @@
     font-size: 20px;
     border-radius: 30px;
 }
+
+.img-hide{
+    display: none;
+}

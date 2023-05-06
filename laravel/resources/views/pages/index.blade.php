@@ -45,7 +45,13 @@
         <main class="col-12 col-lg-9 mb-5">
             <article>
                 <div class="row align-middle pt-3 bg-white shadow-sm rounded-extra mt-4 mb-5 pb-3">
-                    <h1 class="col-12 pb-3 ps-5 pt-3" id="category-title">Odporúčné</h1>
+                    <h1 class="col-12 pb-3 ps-5 pt-3" id="category-title">
+                        @if( $favorites)
+                            Oblúbené
+                        @else
+                            Odporúčné
+                        @endif
+                    </h1>
                     @foreach ($bookList as $book)
                         <div class="col-12 col-md-6 p-2">
                             <article class="bg-light shadow-sm rounded-extra p-2 ms-2 me-2">
