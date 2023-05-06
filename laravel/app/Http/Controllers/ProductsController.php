@@ -111,7 +111,6 @@ class ProductsController extends Controller
         $bookOrderingProperty = $categoryOrder == 'new' || $categoryOrder == 'old' ? 'date' : ($categoryOrder == 'cheap' || $categoryOrder == 'expensive' ? 'price' : ($categoryOrder == 'short' || $categoryOrder == 'long' ? 'num_of_pages' : 'id'));
         $bookOrderingDirection = $categoryOrder == 'old' || $categoryOrder == 'cheap' || $categoryOrder == 'short' ? 'asc' : 'desc';
         if (request('search')) {
-            $bookCount = Product::count();
             $books = Product::with('mainImage')
                 ->where('name','LIKE','%'.$searchQuery.'%')
                 ->orWhere('author','LIKE','%'.$searchQuery.'%')
@@ -125,10 +124,9 @@ class ProductsController extends Controller
                 ->take(self::$defaultValues['pageSize'])
                 ->get();
             \Log::debug($books);
-            $maxPageNumber = ceil($bookCount / self::$defaultValues['pageSize']);
+            $maxPageNumber = ceil(count($books) / self::$defaultValues['pageSize']);
             $categoryName = "Vyhľadávanie: " . $searchQuery;
         } else {
-            $bookCount = Product::count();
             $books = Product::with('mainImage')
                 ->where('price', '>',$minPrice)
                 ->where('price', '<', $maxPrice)
@@ -139,7 +137,7 @@ class ProductsController extends Controller
                 ->take(self::$defaultValues['pageSize'])
                 ->get();
             \Log::debug($books);
-            $maxPageNumber = ceil($bookCount / self::$defaultValues['pageSize']);
+            $maxPageNumber = ceil(count($books) / self::$defaultValues['pageSize']);
         }
 
         return view('pages/products/category', [
