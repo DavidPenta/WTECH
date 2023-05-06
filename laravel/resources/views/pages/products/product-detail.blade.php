@@ -24,7 +24,7 @@
                         <img id="book-image-large" class="img-fluid d-block mx-auto mb-auto w-75"
                              src="{{ $images->whereIn('product_id', $bookData->id)->whereIn('type', 'main')->first()->path  ?? '/images/book_covers/error.png'  }}"
                              alt="Book cover">
-                        <button class="btn mt-1 me-1 active" >1</button>
+                        <button class="btn mt-1 me-1 active">1</button>
                         <button class="btn mt-1 ms-1" onclick="changeImage(2)">2</button>
                     </div>
                     <div id="img-2" class="container img-hide">
@@ -37,17 +37,18 @@
                 </div>
                 <div class="container col-12 col-md-6 mb-5 px-3 ps-md-2 pe-md-3 align-right text-center text-md-start">
                     <h1 class="d-block mt-4">{{ $bookData->name }}</h1>
-                    <span class="d-block fs-2 mt-3 text-black">{{ $bookData->author }}</span>
+                    <h2 class="d-block mt-3 text-black">{{ $bookData->author }}</h2>
                     <span class="d-block fs-4 mt-3 text-black">{{ $bookData->publisher }}</span>
-                    <span class="d-block fs-4 mt-3 text-black">
-                    @if ($bookData->num_of_pages == 1)
+                    <span class="d-block fs-5 mt-3 text-black">Jazyk: {{ $bookData->language }}</span>
+                    <span class="d-block fs-5 mt-3 text-black">
+                        @if ($bookData->num_of_pages == 1)
                             {{ $bookData->num_of_pages }} strana
                         @elseif ($bookData->num_of_pages < 5)
                             {{ $bookData->num_of_pages }} strany
                         @else
                             {{ $bookData->num_of_pages }} strán
                         @endif
-                </span>
+                    </span>
                     <span class="d-block fs-6 mt-5 pe-0 pe-md-5 text-black">{{ $bookData->description }}</span>
                     <span class="d-block fs-1 mt-5 text-success text-black"><b>{{ number_format((float)$bookData->price, 2, '.', '') }}€</b></span>
                 </div>

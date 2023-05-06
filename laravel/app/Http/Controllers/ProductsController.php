@@ -8,6 +8,7 @@ use App\Models\Image;
 use App\Models\Favorites;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use Illuminate\Support\Facades\DB;
 
 class ProductsController extends Controller
 {
@@ -282,7 +283,7 @@ class ProductsController extends Controller
         $draftOrders = Order::where('user_id', '=', $userId)
             ->where('state', '=', 'draft')
             ->get();
-        
+
         \Log::debug($draftOrders);
         if (count($draftOrders) > 0)
         {
@@ -324,5 +325,34 @@ class ProductsController extends Controller
             'isFavorite' => $isFavorite,
             'images' => $images
         ]);
+    }
+
+    private function getBooksOrderedByFavorite()
+    {
+        return DB::select('SELECT a.id, a.name, a.author, a.description, a.language, a.num_of_pages, a.publisher, a.price, a.date, count(*) as c
+                                   FROM "Product" as a FULL OUTER JOIN "Favorites" as b ON (b.product_id = a.id)
+                                   GROUP BY a.id
+                                   ORDER BY c DESC LIMIT 10;');
+    }
+    public function index(Request $request)
+    {
+        $images = Image::all();
+        $favorite_bool = false;
+        if ($request->session()->has('UserId')){
+            $favorites = Favorites::where('user_id', '=', $request->session()->get('UserId'))->get();
+            $books = Product::whereIn('id', $favorites->pluck('product_id'))->get();
+            $favorite_bool = true;
+        }
+        else {
+            $books = $this->getBooksOrderedByFavorite();
+        }
+        $number_of_bestsellers = round(count($books) / 2);
+        if ($number_of_bestsellers == 0) {
+            $favorite_bool = false;
+            $books = $this->getBooksOrderedByFavorite();
+            $number_of_bestsellers = 5;
+        }
+        $bestsellers = Product::inRandomOrder()->where('category_id','=', 1)->take($number_of_bestsellers)->get();
+        return view('pages/index', ['bookList' => $books, 'bestsellers' => $bestsellers, 'images' => $images, 'favorites' => $favorite_bool]);
     }
 }

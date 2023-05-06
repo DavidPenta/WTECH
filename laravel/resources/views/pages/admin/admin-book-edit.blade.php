@@ -52,7 +52,11 @@
                             <label class="ps-3" for="language">Jazyk</label>
                             <select class="form-control" id="language" name="language">
                                 @foreach($languages as $language)
-                                    <option>{{$language}}</option>
+                                    <option value="{{$language}}"
+                                        @if ($language == $book->language)
+                                            selected="selected"
+                                        @endif
+                                    >{{$language}}</option>
                                 @endforeach
                             </select>
                             <span class="text-danger"> @error('language') {{$message}} @enderror</span>
@@ -61,7 +65,11 @@
                             <label class="ps-3" for="publisher">Vydavateľstvo</label>
                             <select class="form-control" id="publisher" name="publisher">
                                 @foreach($publishers as $publisher)
-                                    <option>{{$publisher}}</option>
+                                    <option value="{{$publisher}}"
+                                        @if ($publisher == $book->publisher)
+                                            selected="selected"
+                                        @endif
+                                            >{{$publisher}}</option>
                                 @endforeach
                             </select>
                             <span class="text-danger"> @error('publisher') {{$message}} @enderror</span>
@@ -72,7 +80,11 @@
                             <label class="ps-3" for="category">Kategória</label>
                             <select class="form-control" id="category" name="category">
                                 @foreach($categories as $category)
-                                    <option value="{{$category->id}}">{{$category->full}}</option>
+                                    <option value="{{$category->id}}"
+                                            @if ($category->id == $book->category_id)
+                                                selected="selected"
+                                            @endif
+                                    >{{$category->full}}</option>
                                 @endforeach
                             </select>
                             <span class="text-danger"> @error('category') {{$message}} @enderror</span>
@@ -106,7 +118,8 @@
                                 class="img-fluid book-cover pt-2"
                                 alt="Book cover">
                             <div class="w-100 pt-2 ps-3">
-                                <input class="form-check-input" type="checkbox" value="1" id="img1_del_checkbox" name="img1_del_checkbox">
+                                <input class="form-check-input" type="checkbox" value="1" id="img1_del_checkbox"
+                                       name="img1_del_checkbox">
                                 <label class="form-check-label" for="img1_del_checkbox">
                                     Vymazať hlavný obrázok
                                 </label>
@@ -121,7 +134,8 @@
                                 src="{{ $images->whereIn('product_id', $book->id)->whereIn('type', 'secondary')->first()->path  ?? '/images/book_covers/error.png'  }}"
                                 class="img-fluid book-cover pt-2" alt="Book cover">
                             <div class="w-100 pt-2 ps-3">
-                                <input class="form-check-input" type="checkbox" value="1" id="img2_del_checkbox" name="img2_del_checkbox">
+                                <input class="form-check-input" type="checkbox" value="1" id="img2_del_checkbox"
+                                       name="img2_del_checkbox">
                                 <label class="form-check-label" for="img2_del_checkbox">
                                     Vymazať vedľajší obrázok
                                 </label>
