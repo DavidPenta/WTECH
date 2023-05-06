@@ -99,11 +99,17 @@
                     <div class="row">
                         <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
                             <label class="ps-3" for="image1">Hlavný obrázok</label>
+                            <img
+                                src="{{ $images->whereIn('product_id', $book->id)->whereIn('type', 'main')->first()->path  ?? '/images/book_covers/error.png'  }}"
+                                class="img-fluid book-cover" alt="{{$images->whereIn('product_id', $book->id)->whereIn('type', 'main')->first()->path}}">
                             <input type="file" class="form-control" id="image1" name="image1"/>
                             <span class="text-danger"> @error('image1') {{$message}} @enderror</span>
                         </div>
                         <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
                             <label for="image2">Vedľajší obrázok</label>
+                            <img
+                                src="{{ $images->whereIn('product_id', $book->id)->whereIn('type', 'secondary')->first()->path  ?? '/images/book_covers/error.png'  }}"
+                                class="img-fluid book-cover" alt="Book cover">
                             <input type="file" class="form-control" id="image2" name="image2"/>
                             <span class="text-danger"> @error('image2') {{$message}} @enderror</span>
                         </div>

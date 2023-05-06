@@ -160,12 +160,15 @@ class ProductsController extends Controller
     public function ProductDetailRoute(Request $req)
     {
         $productId = $req->{'product-id'};
+        $images = Image::where('product_id', $productId)->get();
         $bookData = Product::with('images')->find($productId);
+
         if (!$req->session()->has('UserId'))
         {
             return view('pages/products/product-detail', [
                 'bookData' => $bookData,
-                'isFavorite' => false
+                'isFavorite' => false,
+                'images' => $images
             ]);
         }
 
@@ -174,11 +177,11 @@ class ProductsController extends Controller
             ->where('user_id', '=', $userId)
             ->get()
             ->count() > 0;
-        \Log::debug($bookData);
-        \Log::debug($isFavorite);
+
         return view('pages/products/product-detail', [
             'bookData' => $bookData,
-            'isFavorite' => $isFavorite
+            'isFavorite' => $isFavorite,
+            'images' => $images
         ]);
     }
 
