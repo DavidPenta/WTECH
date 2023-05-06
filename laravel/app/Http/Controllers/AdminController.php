@@ -135,6 +135,24 @@ class AdminController extends Controller
         $product->description = $request->description;
         $product->save();
 
+        if ($request->img1_del_checkbox == "1"){
+            $image1_del = Image::where('product_id', $id)->where('type', 'main')->first();
+            if ($image1_del != null) {
+                $image_path = public_path($image1_del->path);
+                File::delete($image_path);
+                $image1_del->delete();
+            }
+        }
+
+        if ($request->img2_del_checkbox == "1"){
+            $image2_del = Image::where('product_id', $id)->where('type', 'secondary')->first();
+            if ($image2_del != null) {
+                $image_path = public_path($image2_del->path);
+                File::delete($image_path);
+                $image2_del->delete();
+            }
+        }
+
         if ($request->image1 != null) {
             $image1 = Image::where('product_id', $id)->where('type', 'main')->first();
             if ($image1 == null) {
