@@ -39,7 +39,6 @@
                                 <img class="d-lg-none" src="/images/logo/logo-small.svg" width="165" height="48"
                                      alt="Kníhkupectvo Knihomoľ"/>
                             </div>
-
                         </a>
                     </div>
                 </li>
@@ -61,18 +60,18 @@
             @endif
             @if(Session::has('UserId'))
                 <li class="nav-item ms-2 me-2 pt-1">
-                    <a id="nav-btn" href="logout-user" type="button" class="btn btn-outline-dark me-2 nav-btn">Odhlásiť sa</a>
+                    <a id="nav-btn" href="{{route('logout-user')}}" type="button" class="btn btn-outline-dark me-2 nav-btn">Odhlásiť sa</a>
                 </li>
             @else
                 <li class="nav-item ms-2 me-2 pt-1">
-                    <a id="nav-btn" href="log-in" type="button" class="btn btn-outline-dark me-2 nav-btn">Prihlásenie</a>
+                    <a id="nav-btn" href="{{route('log-in')}}" type="button" class="btn btn-outline-dark me-2 nav-btn">Prihlásenie</a>
                 </li>
                 <li class="nav-item ms-2 pt-1 me-2 mb-3">
-                    <a id="nav-btn" href="registration" type="button" class="btn btn-warning me-2 nav-btn">Registrácia</a>
+                    <a id="nav-btn" href="{{route('registration')}}" type="button" class="btn btn-warning me-2 nav-btn">Registrácia</a>
                 </li>
             @endif
             <li class="nav-item ms-2 me-2 pt-2">
-                <a href="shopping-cart"
+                <a href="{{route('shopping-cart')}}"
                    class="d-flex text-black text-decoration-none mb-2 justify-content-center mb-md-0"><img
                         src="/images/basket/basket.svg" class="bi me-2" width="40" height="32" alt="Go to cart"/></a>
             </li>

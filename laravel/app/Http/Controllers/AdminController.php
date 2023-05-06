@@ -8,6 +8,7 @@ use App\models\Image;
 use App\models\Favorites;
 use App\models\OrderProduct;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class AdminController extends Controller
 {
@@ -77,7 +78,14 @@ class AdminController extends Controller
 
     public function deleteBook($id){
         $product = Product::find($id);
-        Image::where('product_id', $id)->delete();
+        $images = Image::where('product_id', $id)->get();
+        foreach ($images as $image) {
+            $image_path = public_path($image->path);
+            if (file_exists($image_path)) {
+                File::delete($image_path);
+            }
+            $image->delete();
+        }
         Favorites::where('product_id', $id)->delete();
         OrderProduct::where('product_id', $id)->delete();
         $product->delete();
@@ -132,6 +140,11 @@ class AdminController extends Controller
                 $image1->product_id = $product->id;
                 $image1->type = "main";
             }
+            else
+            {
+                $image_path = public_path($image1->path);
+                File::delete($image_path);
+            }
             $image_name = $product->id .'_main_' . time() . '.' .$request->image1->extension();
             $request->image1->move(public_path('images/book_covers'), $image_name);
             $image1->path = "images/book_covers/" . $image_name;
@@ -144,6 +157,11 @@ class AdminController extends Controller
                 $image2 = new Image();
                 $image2->product_id = $product->id;
                 $image2->type = "main";
+            }
+            else
+            {
+                $image_path = public_path($image2->path);
+                File::delete($image_path);
             }
             $image_name = $product->id .'_secondary_' . time() . '.' .$request->image2->extension();
             $request->image2->move(public_path('images/book_covers'), $image_name);

@@ -42,6 +42,7 @@ class OrderController extends Controller
                 'order' => $order
             ]);
         }
+
     }
 
     public function ProductCount(Request $req, $id)

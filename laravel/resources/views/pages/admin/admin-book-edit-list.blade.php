@@ -23,7 +23,7 @@
             </div>
             <div class="col-6">
                 <a href="/admin-book-edit-list" type="button"
-                   class="btn btn-light btn-xl mt-4 rounded-extra float-end me-2" id="upravenie">
+                   class="btn btn-light btn-xl mt-4 rounded-extra float-end me-2 active">
                     Upravenie kníh
                 </a>
             </div>

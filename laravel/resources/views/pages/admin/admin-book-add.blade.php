@@ -6,7 +6,7 @@
     <div class="container">
         <nav class="row">
             <div class="col-6 ps-4">
-                <a href="/admin-book-add" type="button" class="btn btn-light btn-xl mt-4 rounded-extra">
+                <a href="/admin-book-add" type="button" class="btn btn-light btn-xl mt-4 rounded-extra active">
                     Pridanie knihy
                 </a>
             </div>
