@@ -54,19 +54,25 @@
                 </div>
             </div>
             <div class="row">
+                @if(Session::has('UserId'))
                 <section class="container col-12 col-md-6 align-left text-center">
-                    <form method="POST"
-                          action="{{ route('product-detail-post', ['product-id' => $bookData->id, 'post-action' => 'favorite']) }}">
-                        @csrf
-                        <button type="submit"
-                                class="btn btn-outline-danger btn-xxxl rounded-extra align-middle mt-md-5 {{ $isFavorite ? 'active' : '' }}">
-                            <img src="../../images/heart.svg" width="32" alt="Add to favorites">
-                            <span
-                                class="ms-2 align-middle">{{ $isFavorite ? 'Odobrať z obľúbených' : 'Pridať medzi obľúbené' }}</span>
-                        </button>
-                    </form>
+                        <form method="POST"
+                              action="{{ route('product-detail-post', ['product-id' => $bookData->id, 'post-action' => 'favorite']) }}">
+                            @csrf
+                            <button type="submit"
+                                    class="btn btn-outline-danger btn-xxxl rounded-extra align-middle mt-md-5 {{ $isFavorite ? 'active' : '' }}">
+                                <img src="../../images/heart.svg" width="32" alt="Add to favorites">
+                                <span
+                                    class="ms-2 align-middle">{{ $isFavorite ? 'Odobrať z obľúbených' : 'Pridať medzi obľúbené' }}</span>
+                            </button>
+                        </form>
                 </section>
-                <section class="container col-12 col-md-6 align-right text-center">
+                @endif
+                <section class="container col-12
+                @if(Session::has('UserId'))
+                    col-md-6
+                @endif
+                 align-right text-center">
                     <form method="POST"
                           action="{{ route('product-detail-post', ['product-id' => $bookData->id, 'post-action' => 'addToCart']) }}">
                         @csrf
