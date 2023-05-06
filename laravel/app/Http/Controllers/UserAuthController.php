@@ -112,22 +112,22 @@ class UserAuthController extends Controller
     public function index(Request $request)
     {
         $images = Image::all();
-        $favorites = false;
+        $favorite_bool = false;
         if ($request->session()->has('UserId')){
             $favorites = Favorites::where('user_id', '=', $request->session()->get('UserId'))->get();
             $books = Product::whereIn('id', $favorites->pluck('product_id'))->get();
-            $favorites = true;
+            $favorite_bool = true;
         }
         else {
             $books = $this->getBooksOrderedByFavorite();
         }
         $number_of_bestsellers = round(count($books) / 2);
         if ($number_of_bestsellers == 0) {
-            $favorites = false;
+            $favorite_bool = false;
             $books = $this->getBooksOrderedByFavorite();
             $number_of_bestsellers = 5;
         }
         $bestsellers = Product::inRandomOrder()->where('category_id','=', 1)->take($number_of_bestsellers)->get();
-        return view('pages/index', ['bookList' => $books, 'bestsellers' => $bestsellers, 'images' => $images, 'favorites' => $favorites]);
+        return view('pages/index', ['bookList' => $books, 'bestsellers' => $bestsellers, 'images' => $images, 'favorites' => $favorite_bool]);
     }
 }

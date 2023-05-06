@@ -104,6 +104,8 @@
                                 class="img-fluid book-cover" alt="{{$images->whereIn('product_id', $book->id)->whereIn('type', 'main')->first()->path}}">
                             <input type="file" class="form-control" id="image1" name="image1"/>
                             <span class="text-danger"> @error('image1') {{$message}} @enderror</span>
+                            <checkbox
+
                         </div>
                         <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
                             <label for="image2">Vedľajší obrázok</label>
