@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Image;
+use App\Models\Favorites;
 
 class BookMock
 {
@@ -40,6 +42,7 @@ class ProductsController extends Controller
         'maxPrice' => 10000,
         'minPages' => 1,
         'maxPages' => 10000,
+        'pageSize' => 10
     ];
 
     private static array $categoryTitleMapping = [
@@ -79,11 +82,15 @@ class ProductsController extends Controller
         'de'
     ];
 
+    public function ParseShoppingCartCookie(string $value)
+    {
+        // TODO
+    }
+
     public function CategoryRoute(Request $req)
     {
         $searchQuery = $req->search;
         $pageNumber = $req->page;
-        $maxPageNumber = 20;
         $categoryNameFromRequest = $req->categoryName;
         $categoryName = array_key_exists($categoryNameFromRequest, self::$categoryTitleMapping)
             ? self::$categoryTitleMapping[$req->categoryName]
@@ -100,19 +107,41 @@ class ProductsController extends Controller
         $language = in_array($languageFromRequest, self::$bookLanguageOptions)
             ? $languageFromRequest
             : 'all';
-        \Log::debug($req->all());
-        \Log::debug($categoryOrder);
 
-
+        $bookOrderingProperty = $categoryOrder == 'new' || $categoryOrder == 'old' ? 'date' : ($categoryOrder == 'cheap' || $categoryOrder == 'expensive' ? 'price' : ($categoryOrder == 'short' || $categoryOrder == 'long' ? 'num_of_pages' : 'id'));
+        $bookOrderingDirection = $categoryOrder == 'old' || $categoryOrder == 'cheap' || $categoryOrder == 'short' ? 'asc' : 'desc';
         if (request('search')) {
-            $books = Product::where('name','LIKE','%'.$searchQuery.'%')
+            $bookCount = Product::count();
+            $books = Product::with('mainImage')
+                ->where('name','LIKE','%'.$searchQuery.'%')
                 ->orWhere('author','LIKE','%'.$searchQuery.'%')
                 ->orWhere('description','LIKE','%'.$searchQuery.'%')
+                ->where('price', '>',$minPrice)
+                ->where('price', '<', $maxPrice)
+                ->where('num_of_pages', '>', $minPages)
+                ->where('num_of_pages', '<', $maxPages)
+                ->orderBy($bookOrderingProperty, $bookOrderingDirection)
+                ->skip(self::$defaultValues['pageSize'] * ($pageNumber - 1))
+                ->take(self::$defaultValues['pageSize'])
                 ->get();
+            \Log::debug($books);
+            $maxPageNumber = ceil($bookCount / self::$defaultValues['pageSize']);
             $categoryName = "Vyhľadávanie: " . $searchQuery;
         } else {
-            $books = Product::all();
+            $bookCount = Product::count();
+            $books = Product::with('mainImage')
+                ->where('price', '>',$minPrice)
+                ->where('price', '<', $maxPrice)
+                ->where('num_of_pages', '>', $minPages)
+                ->where('num_of_pages', '<', $maxPages)
+                ->orderBy($bookOrderingProperty, $bookOrderingDirection)
+                ->skip(self::$defaultValues['pageSize'] * ($pageNumber - 1))
+                ->take(self::$defaultValues['pageSize'])
+                ->get();
+            \Log::debug($books);
+            $maxPageNumber = ceil($bookCount / self::$defaultValues['pageSize']);
         }
+
         return view('pages/products/category', [
             'category' => $categoryNameFromRequest,
             'categoryName' => $categoryName,
@@ -131,8 +160,93 @@ class ProductsController extends Controller
     public function ProductDetailRoute(Request $req)
     {
         $productId = $req->{'product-id'};
-        $bookData = Product::find($productId);
-        //$bookData = new BookMock(1, 'Book Name', 'Author Name', 'Publisher Name', 5, 'Description', 20.50); // Mocked, use db later
-        return view('pages/products/product-detail', ['bookData' => $bookData]);
+        $bookData = Product::with('images')->find($productId);
+        if (!$req->session()->has('UserId'))
+        {
+            return view('pages/products/product-detail', [
+                'bookData' => $bookData,
+                'isFavorite' => false
+            ]);
+        }
+
+        $userId = $req->session()->has('UserId') ?  $req->session()->get('UserId') : '';
+        $isFavorite = Favorites::where('product_id', '=', $productId)
+            ->where('user_id', '=', $userId)
+            ->get()
+            ->count() > 0;
+        \Log::debug($bookData);
+        \Log::debug($isFavorite);
+        return view('pages/products/product-detail', [
+            'bookData' => $bookData,
+            'isFavorite' => $isFavorite
+        ]);
+    }
+
+    public function ProductDetailPostRoute(Request $req)
+    {
+        $postAction = $req->{'post-action'};
+        if ($postAction == 'favorite')
+        {
+            return self::ProductDetailFavoriteRoute($req);
+        }
+        else if ($postAction == 'addToCart')
+        {
+            return self::ProductDetailAddToCartRoute($req);
+        }
+        else
+        {
+            $bookData = Product::with('images')->find($productId);
+            return view('pages/products/product-detail', [
+                'bookData' => $bookData,
+                'isFavorite' => false
+            ]);
+        }
+    }
+
+    public function ProductDetailFavoriteRoute(Request $req)
+    {
+        $productId = $req->{'product-id'};
+        $bookData = Product::with('images')->find($productId);
+        \Log::debug($productId);
+        if (!$req->session()->has('UserId'))
+        {
+            return view('pages/products/product-detail', [
+                'bookData' => $bookData,
+                'isFavorite' => false
+            ]);
+        }
+
+        $userId = $req->session()->has('UserId') ?  $req->session()->get('UserId') : '';
+        $favorite = Favorites::where('product_id', '=', $productId)->where('user_id', '=', $userId);
+
+        if (count($favorite->get()) > 0)
+        {
+            $favorite->delete();
+            $isFavorite = false;
+        }
+        else
+        {
+            $favorite = new Favorites;
+            $favorite->user_id = $userId;
+            $favorite->product_id = $productId;
+            $favorite->save();
+            $isFavorite = true;
+        }
+        \Log::debug($bookData);
+        \Log::debug($isFavorite);
+        return view('pages/products/product-detail', [
+            'bookData' => $bookData,
+            'isFavorite' => $isFavorite
+        ]);
+    }
+
+    public function ProductDetailAddToCartRoute(Request $req)
+    {
+        $productId = $req->{'product-id'};
+        $userId = $req->session()->has('UserId') ?  $req->session()->get('UserId') : '';
+        return view('pages/products/product-detail', [
+            'bookData' => $bookData,
+            'isFavorite' => $isFavorite
+        ]);
     }
 }

@@ -30,11 +30,11 @@
                     <label class="form-check-label fs-5 col-12 ps-1" for="order-new">
                         <input class="form-check-input me-2" type="radio" id="order-new" name="order"
                                value="new" @checked($categoryOrder == 'new')>
-                        Od najdlhšieho</label>
+                        Od najnovšieho</label>
                     <label class="form-check-label fs-5 col-12 ps-1" for="order-old">
                         <input class="form-check-input me-2" type="radio" id="order-old" name="order"
                                value="old" @checked($categoryOrder == 'old')>
-                        Od najdlhšieho</label>
+                        Od najstaršieho</label>
                     <label class="form-check-label fs-5 col-12 ps-1" for="order-cheap">
                         <input class="form-check-input me-2" type="radio" id="order-cheap" name="order"
                                value="cheap" @checked($categoryOrder == 'cheap')>
@@ -59,7 +59,7 @@
                 </section>
             </form>
 
-            <form class="align-middle p-3 p-lg-5 bg-white shadow-sm rounded-extra mt-4">
+            <form method="get" class="align-middle p-3 p-lg-5 bg-white shadow-sm rounded-extra mt-4">
                 <input type="hidden" name="categoryName" value="{{ $category }}" />
                 <input type="hidden" name="page" value="{{ $pageNumber }}" />
                 <input type="hidden" name="order" value="{{ $categoryOrder }}" />
@@ -120,7 +120,7 @@
                                     </section>
                                     <section class="row p-3">
                                         <section class="d-flex container col-4 align-left text-center">
-                                            <img class="img-fluid mb-auto" src="../../images/book_covers/book.png"
+                                            <img class="img-fluid mb-auto" src="{{ $book->mainImage->path ?? '/images/book_covers/error.png' }}"
                                                  alt="Book cover">
                                         </section>
                                         <section class="d-flex container col-8 align-right">

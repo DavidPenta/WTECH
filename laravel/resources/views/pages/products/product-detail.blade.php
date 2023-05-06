@@ -28,18 +28,24 @@
             </div>
         </div>
         <div class="row">
-            <div class="container col-12 col-md-6 align-left text-center">
-                <button type="button" class="btn btn-outline-danger btn-xxxl rounded-extra align-middle mt-md-5">
-                    <img src="../../images/heart.svg" width="32" alt="Add to favorites">
-                    <span class="ms-2 align-middle">Pridať medzi obľúbené</span>
-                </button>
-            </div>
-            <div class="container col-12 col-md-6 align-right text-center">
-                <button type="button" class="btn btn-xxl btn-success btn-block rounded-extra mt-5 align-middle">
-                    <img src="../../images/basket/basket-light.svg" width="32" alt="Go to cart">
-                    <span class="ms-2 align-middle">Vložiť do košíka</span>
-                </button>
-            </div>
+            <section class="container col-12 col-md-6 align-left text-center">
+                <form method="POST" action="{{ route('product-detail-post', ['product-id' => $bookData->id, 'post-action' => 'favorite']) }}">
+                    @csrf    
+                    <button type="submit" class="btn btn-outline-danger btn-xxxl rounded-extra align-middle mt-md-5 {{ $isFavorite ? 'active' : '' }}" >
+                        <img src="../../images/heart.svg" width="32" alt="Add to favorites">
+                        <span class="ms-2 align-middle">{{ $isFavorite ? 'Odobrať z obľúbených' : 'Pridať medzi obľúbené' }}</span>
+                    </button>
+                </form>
+            </section>
+            <section class="container col-12 col-md-6 align-right text-center">
+                <form method="POST" action="{{ route('product-detail-post', ['product-id' => $bookData->id, 'post-action' => 'addToCart']) }}">
+                    @csrf
+                    <button type="submit" class="btn btn-xxl btn-success btn-block rounded-extra mt-5 align-middle">
+                        <img src="../../images/basket/basket-light.svg" width="32" alt="Go to cart">
+                        <span class="ms-2 align-middle">Vložiť do košíka</span>
+                    </button>
+                </form>
+            </section>
         </div>
     </div>
 </div>

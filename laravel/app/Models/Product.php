@@ -18,4 +18,8 @@ class Product extends Model
     public function images() {
         return $this->hasMany('App\Models\Image');
     }
+
+    public function mainImage() {
+        return $this->images()->where('type', '=', 'main')->one();
+    }
 }

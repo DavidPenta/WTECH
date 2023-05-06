@@ -58,6 +58,8 @@ Route::get('/category', [ProductsController::class, 'CategoryRoute'])
 
 Route::get('/product-detail', [ProductsController::class, 'ProductDetailRoute'])
     ->name('product-detail');
+Route::post('/product-detail', [ProductsController::class, 'ProductDetailPostRoute'])
+    ->name('product-detail-post');
 
 Route::get('/forgot-password', function () {
     return view('pages/user-auth/forgot-password');
