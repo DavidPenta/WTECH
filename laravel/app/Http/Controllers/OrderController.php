@@ -9,11 +9,23 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
+    public function CalculateValue(Order $order)
+    {
+        $suma = 0;
+        foreach($order->orderProducts as $orderProduct) {
+            $suma += $orderProduct->product->price * $orderProduct->quantity;
+        }
+        $order->value = $suma;
+        $order->save();
+    }
+
     public function ShoppingCartRoute(Request $req)
     {
         if ($req->session()->has('UserId')) {
             $currentUserId = $req->session()->get('UserId');
-            $order = Order::where('user_id', $currentUserId)->first();
+            $user_order = Order::where('user_id', $currentUserId)->first()->id;
+            $order = Order::findOrFail($user_order);
+            $this->CalculateValue($order);
             return view('pages/order/shopping-cart', [
                 'order' => $order
             ]);
@@ -28,19 +40,24 @@ class OrderController extends Controller
 
     public function ProductCount(Request $req, $id)
     {
+        Log::debug('quantity');
         $req->validate([
             'quantity' => ['required', 'integer', 'min:0'],
         ]);
+        Log::debug('validated');
         $productCount = OrderProduct::find($id);
         $productCount->quantity = $req->quantity;
         $productCount->save();
+        $this->CalculateValue($productCount->order);
         return redirect('shopping-cart');
     }
 
     public function DeleteProduct(Request $req, $id)
     {
+        Log::debug('delete');
         $productCount = OrderProduct::find($id);
         $productCount->delete();
+        $this->CalculateValue($productCount->order);
         return redirect('shopping-cart');
     }
 
@@ -79,7 +96,6 @@ class OrderController extends Controller
         if ($req->session()->has('UserId')) {
             $currentUserId = $req->session()->get('UserId');
             $user_order = Order::where('user_id', $currentUserId)->first()->id;
-            Log::debug($user_order);
             $order = Order::findOrFail($user_order);
         } else {
             //cookies order tu bude

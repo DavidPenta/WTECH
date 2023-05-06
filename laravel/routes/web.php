@@ -46,9 +46,9 @@ Route::post('/admin-book-edit/{id}', [AdminController::class, 'saveEditedBook'])
     ->name('saveEditedBook');
 
 
-Route::get('/shopping-cart', [OrderController::class, 'ShoppingCartRoute']);
+Route::get('/shopping-cart', [OrderController::class, 'ShoppingCartRoute'])->name('shopping-cart');
 Route::post('/shopping-cart/{id}', [OrderController::class, 'ProductCount'])->name('shoppingCart.quantity');
-Route::delete('/shopping-cart/{id}', [OrderController::class, 'DeleteProduct'])->name('shoppingCart.destroy');
+Route::post('//shopping-cart/d/{id}', [OrderController::class, 'DeleteProduct'])->name('shoppingCart.remove');
 
 Route::get('/order', [OrderController::class, 'OrderRoute']);
 Route::post('/order', [OrderController::class, 'CompleteOrder'])->name('order.complete');
