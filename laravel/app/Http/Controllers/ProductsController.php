@@ -185,6 +185,7 @@ class ProductsController extends Controller
         ]);
     }
 
+
     public function ProductDetailPostRoute(Request $req)
     {
         $postAction = $req->{'post-action'};
