@@ -111,33 +111,35 @@ class ProductsController extends Controller
         $bookOrderingProperty = $categoryOrder == 'new' || $categoryOrder == 'old' ? 'date' : ($categoryOrder == 'cheap' || $categoryOrder == 'expensive' ? 'price' : ($categoryOrder == 'short' || $categoryOrder == 'long' ? 'num_of_pages' : 'id'));
         $bookOrderingDirection = $categoryOrder == 'old' || $categoryOrder == 'cheap' || $categoryOrder == 'short' ? 'asc' : 'desc';
         if (request('search')) {
-            $books = Product::with('mainImage')
+            $allBooks = Product::with('mainImage')
                 ->where('name','LIKE','%'.$searchQuery.'%')
                 ->orWhere('author','LIKE','%'.$searchQuery.'%')
                 ->orWhere('description','LIKE','%'.$searchQuery.'%')
                 ->where('price', '>',$minPrice)
                 ->where('price', '<', $maxPrice)
                 ->where('num_of_pages', '>', $minPages)
-                ->where('num_of_pages', '<', $maxPages)
-                ->orderBy($bookOrderingProperty, $bookOrderingDirection)
+                ->where('num_of_pages', '<', $maxPages);
+            $bookCount = $allBooks->count();
+            $books = $allBooks->orderBy($bookOrderingProperty, $bookOrderingDirection)
                 ->skip(self::$defaultValues['pageSize'] * ($pageNumber - 1))
                 ->take(self::$defaultValues['pageSize'])
                 ->get();
             \Log::debug($books);
-            $maxPageNumber = ceil(count($books) / self::$defaultValues['pageSize']);
+            $maxPageNumber = ceil($bookCount / self::$defaultValues['pageSize']);
             $categoryName = "Vyhľadávanie: " . $searchQuery;
         } else {
-            $books = Product::with('mainImage')
+            $allBooks = Product::with('mainImage')
                 ->where('price', '>',$minPrice)
                 ->where('price', '<', $maxPrice)
                 ->where('num_of_pages', '>', $minPages)
-                ->where('num_of_pages', '<', $maxPages)
-                ->orderBy($bookOrderingProperty, $bookOrderingDirection)
+                ->where('num_of_pages', '<', $maxPages);
+            $bookCount = $allBooks->count();
+            $books = $allBooks->orderBy($bookOrderingProperty, $bookOrderingDirection)
                 ->skip(self::$defaultValues['pageSize'] * ($pageNumber - 1))
                 ->take(self::$defaultValues['pageSize'])
                 ->get();
             \Log::debug($books);
-            $maxPageNumber = ceil(count($books) / self::$defaultValues['pageSize']);
+            $maxPageNumber = ceil($bookCount / self::$defaultValues['pageSize']);
         }
 
         return view('pages/products/category', [
