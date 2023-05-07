@@ -53,8 +53,8 @@
                             <select class="form-control" id="language" name="language">
                                 @foreach($languages as $language)
                                     <option value="{{$language}}"
-                                        @if ($language == $book->language)
-                                            selected="selected"
+                                            @if ($language == $book->language)
+                                                selected="selected"
                                         @endif
                                     >{{$language}}</option>
                                 @endforeach
@@ -66,10 +66,10 @@
                             <select class="form-control" id="publisher" name="publisher">
                                 @foreach($publishers as $publisher)
                                     <option value="{{$publisher}}"
-                                        @if ($publisher == $book->publisher)
-                                            selected="selected"
+                                            @if ($publisher == $book->publisher)
+                                                selected="selected"
                                         @endif
-                                            >{{$publisher}}</option>
+                                    >{{$publisher}}</option>
                                 @endforeach
                             </select>
                             <span class="text-danger"> @error('publisher') {{$message}} @enderror</span>
@@ -83,7 +83,7 @@
                                     <option value="{{$category->id}}"
                                             @if ($category->id == $book->category_id)
                                                 selected="selected"
-                                            @endif
+                                        @endif
                                     >{{$category->full}}</option>
                                 @endforeach
                             </select>
@@ -117,13 +117,15 @@
                                 src="{{ $images->whereIn('product_id', $book->id)->whereIn('type', 'main')->first()->path  ?? '/images/book_covers/error.png'  }}"
                                 class="img-fluid book-cover pt-2"
                                 alt="Book cover">
-                            <div class="w-100 pt-2 ps-3">
-                                <input class="form-check-input" type="checkbox" value="1" id="img1_del_checkbox"
-                                       name="img1_del_checkbox">
-                                <label class="form-check-label" for="img1_del_checkbox">
-                                    Vymazať hlavný obrázok
-                                </label>
-                            </div>
+                            @if( $images->whereIn('product_id', $book->id)->whereIn('type', 'main')->first() != null)
+                                <div class="w-100 pt-2 ps-3">
+                                    <input class="form-check-input" type="checkbox" value="1" id="img1_del_checkbox"
+                                           name="img1_del_checkbox">
+                                    <label class="form-check-label" for="img1_del_checkbox">
+                                        Vymazať hlavný obrázok
+                                    </label>
+                                </div>
+                            @endif
                             <label class="ps-3 pt-4" for="image2">Nahradiť hlavný obrázok</label>
                             <input type="file" class="form-control mt-2" id="image1" name="image1"/>
                             <span class="text-danger"> @error('image1') {{$message}} @enderror</span>
@@ -133,13 +135,15 @@
                             <img
                                 src="{{ $images->whereIn('product_id', $book->id)->whereIn('type', 'secondary')->first()->path  ?? '/images/book_covers/error.png'  }}"
                                 class="img-fluid book-cover pt-2" alt="Book cover">
-                            <div class="w-100 pt-2 ps-3">
-                                <input class="form-check-input" type="checkbox" value="1" id="img2_del_checkbox"
-                                       name="img2_del_checkbox">
-                                <label class="form-check-label" for="img2_del_checkbox">
-                                    Vymazať vedľajší obrázok
-                                </label>
-                            </div>
+                            @if( $images->whereIn('product_id', $book->id)->whereIn('type', 'secondary')->first() != null)
+                                <div class="w-100 pt-2 ps-3">
+                                    <input class="form-check-input" type="checkbox" value="1" id="img2_del_checkbox"
+                                           name="img2_del_checkbox">
+                                    <label class="form-check-label" for="img2_del_checkbox">
+                                        Vymazať vedľajší obrázok
+                                    </label>
+                                </div>
+                            @endif
                             <label class="ps-3 pt-4" for="image2">Nahradiť vedľajší obrázok</label>
                             <input type="file" class="form-control mt-2" id="image2" name="image2"/>
                             <span class="text-danger"> @error('image2') {{$message}} @enderror</span>
@@ -155,7 +159,7 @@
                     </div>
                 </div>
                 <button type="submit" class="btn btn-success btn-xl mt-4 mb-5 rounded-extra float-end me-5" id="edit">
-                    Upraviť knihu
+                    Uložiť zmeny
                 </button>
             </form>
         </section>

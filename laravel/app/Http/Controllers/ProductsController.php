@@ -32,11 +32,10 @@ class ProductsController extends Controller
     ];
 
     private static array $bookLanguageOptions = [
-        'all',
-        'sk',
-        'en',
-        'cz',
-        'de'
+        'sk' => 'Slovenský',
+        'en' => 'Anglický',
+        'cz' => 'Český',
+        'de' => 'Nemecký',
     ];
 
     public function SerializeShoppingCartCookie(array $value)
@@ -98,22 +97,31 @@ class ProductsController extends Controller
         $minPages = $req->{'min-pages'} ?? self::$defaultValues['minPages'];
         $maxPages = $req->{'max-pages'} ?? self::$defaultValues['maxPages'];
         $languageFromRequest = $req->language;
-        $language = in_array($languageFromRequest, self::$bookLanguageOptions)
-            ? $languageFromRequest
-            : 'all';
+
+        $language = 'all';
+        if ($languageFromRequest != 'all'){
+            $language = self::$bookLanguageOptions[$languageFromRequest] ?? 'all';
+        }
 
         $bookOrderingProperty = $categoryOrder == 'new' || $categoryOrder == 'old' ? 'date' : ($categoryOrder == 'cheap' || $categoryOrder == 'expensive' ? 'price' : ($categoryOrder == 'short' || $categoryOrder == 'long' ? 'num_of_pages' : 'id'));
         $bookOrderingDirection = $categoryOrder == 'old' || $categoryOrder == 'cheap' || $categoryOrder == 'short' ? 'asc' : 'desc';
 
         if (request('search')) {
             $allBooks = Product::with('mainImage')
-                ->where('name','LIKE','%'.$searchQuery.'%')
-                ->orWhere('author','LIKE','%'.$searchQuery.'%')
-                ->orWhere('description','LIKE','%'.$searchQuery.'%')
-                ->where('price', '>',$minPrice)
-                ->where('price', '<', $maxPrice)
-                ->where('num_of_pages', '>', $minPages)
-                ->where('num_of_pages', '<', $maxPages);
+                ->where('price', '>=',$minPrice)
+                ->where('price', '<=', $maxPrice)
+                ->where('num_of_pages', '>=', $minPages)
+                ->where('num_of_pages', '<=', $maxPages)
+                ->where(function($query) use ($searchQuery) {
+                    $query->where('name', 'like', '%'.$searchQuery.'%')
+                        ->orWhere('author', 'like', '%'.$searchQuery.'%')
+                        ->orWhere('description', 'like', '%'.$searchQuery.'%');
+                });
+
+            if ($language != 'all') {
+                $allBooks = $allBooks->where('language', '=', $language);
+            }
+
             $bookCount = $allBooks->count();
             $books = $allBooks->orderBy($bookOrderingProperty, $bookOrderingDirection)
                 ->skip(self::$defaultValues['pageSize'] * ($pageNumber - 1))
@@ -124,10 +132,13 @@ class ProductsController extends Controller
         } else {
             $allBooks = Product::with('mainImage')
                 ->where('category_id', '=', $category->id)
-                ->where('price', '>',$minPrice)
-                ->where('price', '<', $maxPrice)
-                ->where('num_of_pages', '>', $minPages)
-                ->where('num_of_pages', '<', $maxPages);
+                ->where('price', '>=',$minPrice)
+                ->where('price', '<=', $maxPrice)
+                ->where('num_of_pages', '>=', $minPages)
+                ->where('num_of_pages', '<=', $maxPages);
+            if ($language != 'all') {
+                $allBooks = $allBooks->where('language', '=', $language);
+            }
             $bookCount = $allBooks->count();
             $books = $allBooks->orderBy($bookOrderingProperty, $bookOrderingDirection)
                 ->skip(self::$defaultValues['pageSize'] * ($pageNumber - 1))
@@ -148,7 +159,7 @@ class ProductsController extends Controller
             'maxPrice' => $maxPrice,
             'minPages' => $minPages,
             'maxPages' => $maxPages,
-            'language' => $language,
+            'language' => $languageFromRequest,
             'bookList' => $books
         ]);
     }
