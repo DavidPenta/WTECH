@@ -10,4 +10,8 @@ class User extends Model
     use HasFactory;
     public $timestamps = false;
     protected $table = 'User';
+
+    public function address() {
+        return $this->belongsTo('App\Models\Address');
+    }
 }

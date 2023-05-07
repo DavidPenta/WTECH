@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Image;
@@ -100,10 +101,10 @@ class ProductsController extends Controller
         $language = in_array($languageFromRequest, self::$bookLanguageOptions)
             ? $languageFromRequest
             : 'all';
-        
+
         $bookOrderingProperty = $categoryOrder == 'new' || $categoryOrder == 'old' ? 'date' : ($categoryOrder == 'cheap' || $categoryOrder == 'expensive' ? 'price' : ($categoryOrder == 'short' || $categoryOrder == 'long' ? 'num_of_pages' : 'id'));
         $bookOrderingDirection = $categoryOrder == 'old' || $categoryOrder == 'cheap' || $categoryOrder == 'short' ? 'asc' : 'desc';
-        
+
         if (request('search')) {
             $allBooks = Product::with('mainImage')
                 ->where('name','LIKE','%'.$searchQuery.'%')
@@ -273,6 +274,7 @@ class ProductsController extends Controller
         }
 
         $userId = $req->session()->get('UserId');
+        $user = User::find($userId);
         $draftOrders = Order::where('user_id', '=', $userId)
             ->where('state', '=', 'draft')
             ->get();
@@ -287,6 +289,7 @@ class ProductsController extends Controller
             $draftOrder = new Order;
             $draftOrder->state = 'draft';
             $draftOrder->user_id = $userId;
+            $draftOrder->address_id = $user->address->id;
             $draftOrder->save();
         }
 

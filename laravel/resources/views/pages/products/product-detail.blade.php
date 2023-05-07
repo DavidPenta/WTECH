@@ -66,7 +66,7 @@
                     <form method="POST"
                           action="{{ route('product-detail-post', ['product-id' => $bookData->id, 'post-action' => 'addToCart']) }}">
                         @csrf
-                        <button type="submit" class="btn btn-xxl btn-success btn-block rounded-extra mt-5 align-middle">
+                        <button type="submit" class="btn btn-xxl btn-success btn-block rounded-extra mt-5 align-middle text-nowrap">
                             <img src="../../images/basket/basket-light.svg" width="32" alt="Go to cart">
                             <span class="ms-2 align-middle">Vložiť do košíka</span>
                         </button>
