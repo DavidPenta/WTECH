@@ -19,7 +19,7 @@ use \App\Http\Controllers\SearchController;
 |
 */
 
-Route::get('/',[UserAuthController::class, 'index']);
+Route::get('/',[ProductsController::class, 'index']);
 
 Route::get('/admin-book-add', [AdminController::class, 'addBook'])
     ->middleware('isLoggedIn')
@@ -45,13 +45,19 @@ Route::post('/admin-book-edit/{id}', [AdminController::class, 'saveEditedBook'])
     ->middleware('isLoggedIn')
     ->name('saveEditedBook');
 
+Route::get('/shopping-cart', [OrderController::class, 'ShoppingCartRoute'])
+->name('shopping-cart');
 
-Route::get('/shopping-cart', [OrderController::class, 'ShoppingCartRoute'])->name('shopping-cart');
-Route::post('/shopping-cart/{id}', [OrderController::class, 'ProductCount'])->name('shoppingCart.quantity');
-Route::post('//shopping-cart/d/{id}', [OrderController::class, 'DeleteProduct'])->name('shoppingCart.remove');
+Route::post('/shopping-cart/{id}', [OrderController::class, 'ProductCount'])
+->name('shoppingCart.quantity');
+
+Route::post('//shopping-cart/d/{id}', [OrderController::class, 'DeleteProduct'])
+->name('shoppingCart.remove');
 
 Route::get('/order', [OrderController::class, 'OrderRoute']);
-Route::post('/order', [OrderController::class, 'CompleteOrder'])->name('order.complete');
+
+Route::post('/order', [OrderController::class, 'CompleteOrder'])
+->name('order.complete');
 
 Route::get('/category', [ProductsController::class, 'CategoryRoute'])
     ->name('category');
@@ -79,7 +85,3 @@ Route::post('login-user', [UserAuthController::class, 'loginUser'])
 
 Route::get('logout-user', [UserAuthController::class, 'logoutUser'])
     ->name('logout-user');
-
-
-//Route::get('/search', [ProductsController::class, 'CategoryRoute'])
-//    ->name('search');

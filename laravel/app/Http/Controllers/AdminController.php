@@ -176,7 +176,7 @@ class AdminController extends Controller
             if ($image2 == null) {
                 $image2 = new Image();
                 $image2->product_id = $product->id;
-                $image2->type = "main";
+                $image2->type = "secondary";
             }
             else
             {
@@ -189,7 +189,7 @@ class AdminController extends Controller
             $image2->save();
         }
 
-        return redirect('admin-book-edit-list')->with('success', 'Kniha bola upravená úspešne!');
+        return redirect('admin-book-edit-list')->with('success', 'Kniha ' .$product->name. ' bola upravená úspešne!');
     }
 
 }

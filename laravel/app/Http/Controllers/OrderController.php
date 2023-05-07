@@ -1,14 +1,54 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Product;
+use App\Models\User;
+use App\Models\Address as Adresa;
 use App\Models\OrderProduct;
-use Illuminate\Support\Facades\Auth;
+
+class ProductMock {
+    public $id;
+    public $name;
+    public $author;
+    public $price;
+    public $quantity;
+    public $img;
+}
 
 class OrderController extends Controller
 {
+    public function SerializeShoppingCartCookie(array $value)
+    {
+        $results = [];
+        foreach ($value as $bookId => $bookCount)
+        {
+            array_push($results, $bookId.'='.$bookCount);
+        }
+        $result = implode(';', $results);
+        return $result;
+    }
+
+    public function DeserializeShoppingCartCookie(string $value)
+    {
+        $result = [];
+        if ($value == '')
+        {
+            return $result;
+        }
+        $books = explode(';', $value);
+        foreach ($books as $bookData)
+        {
+            $idAndCount = explode('=', $bookData);
+            $bookId = $idAndCount[0];
+            $bookCount = $idAndCount[1];
+            $result[$bookId] = $bookCount;
+        }
+        return $result;
+    }
+
     public function CalculateValue(Order $order)
     {
         $suma = 0;
@@ -26,20 +66,39 @@ class OrderController extends Controller
             $user_order = Order::where('user_id', $currentUserId)->where('state', 'draft')->first();
             if(is_null($user_order)) {
                 return view('pages/order/shopping-cart', [
-                    'order' => null
+                    'order' => null,
+                    'value' => null
                 ]);
             }
-            $order = Order::findOrFail($user_order);
+            $order = Order::findOrFail($user_order->id);
             $this->CalculateValue($order);
             return view('pages/order/shopping-cart', [
-                'order' => $order
+                'order' => $order,
+                'value' => null
             ]);
         } else {
-            //cookies order tu bude
-            $order = Order::where('user_id','25')->first();
-            $this->CalculateValue($order);
+            $shoppingCartFromCookies = $req->session()->has('ShoppingCart') ? $req->session()->get('ShoppingCart') : '';
+            $shoppingCart = self::DeserializeShoppingCartCookie($shoppingCartFromCookies);
+            $value = 0;
+            $products = [];
+            foreach($shoppingCart as $product_id=>$quantity) {
+                $book = Product::find($product_id);
+                $value += $book->price * $quantity;
+
+                $product = new ProductMock;
+                $product->id = $product_id;
+                $product->name = $book->name;
+                $product->author = $book->author;
+                $product->price = $book->price;
+                $product->quantity = $quantity;
+                $product->img = $book->images->where('type', '=', 'main')->first()->path;
+                array_push($products, $product);
+            }
+
+            $req->session()->put('CartValue', $value);
             return view('pages/order/shopping-cart', [
-                'order' => $order
+                'order' => $products,
+                'value' => $value
             ]);
         }
 
@@ -50,18 +109,33 @@ class OrderController extends Controller
         $req->validate([
             'quantity' => ['required', 'integer', 'min:0'],
         ]);
-        $productCount = OrderProduct::find($id);
-        $productCount->quantity = $req->quantity;
-        $productCount->save();
-        $this->CalculateValue($productCount->order);
+
+        if ($req->session()->has('UserId')) {
+            $productCount = OrderProduct::find($id);
+            $productCount->quantity = $req->quantity;
+            $productCount->save();
+        } else {
+            $shoppingCartFromCookies = $req->session()->has('ShoppingCart') ? $req->session()->get('ShoppingCart') : '';
+            $shoppingCart = self::DeserializeShoppingCartCookie($shoppingCartFromCookies);
+            $shoppingCart[$id] = $req->quantity;
+            $shoppingCartSerialized = self::SerializeShoppingCartCookie($shoppingCart);
+            $req->session()->put('ShoppingCart', $shoppingCartSerialized);
+        }
         return redirect('shopping-cart');
     }
 
     public function DeleteProduct(Request $req, $id)
     {
-        $productCount = OrderProduct::find($id);
-        $productCount->delete();
-        $this->CalculateValue($productCount->order);
+        if ($req->session()->has('UserId')) {
+            $productCount = OrderProduct::find($id);
+            $productCount->delete();
+        } else {
+            $shoppingCartFromCookies = $req->session()->has('ShoppingCart') ? $req->session()->get('ShoppingCart') : '';
+            $shoppingCart = self::DeserializeShoppingCartCookie($shoppingCartFromCookies);
+            unset($shoppingCart[$id]);
+            $shoppingCartSerialized = self::SerializeShoppingCartCookie($shoppingCart);
+            $req->session()->put('ShoppingCart', $shoppingCartSerialized);
+        }
         return redirect('shopping-cart');
     }
 
@@ -71,14 +145,14 @@ class OrderController extends Controller
             $currentUserId = $req->session()->get('UserId');
             $order = Order::where('user_id', $currentUserId)->first();
             return view('pages/order/order', [
-                'order' => $order
+                'order' => $order,
+                'value' => null
             ]);
-        }
-        else {
-            //cookies order tu bude
-            $order = Order::where('user_id','25')->first();
+        } else {
+            $value = $req->session()->get('CartValue');
             return view('pages/order/order', [
-                'order' => $order
+                'order' => null,
+                'value' => $value
             ]);
         }
     }
@@ -97,22 +171,46 @@ class OrderController extends Controller
             'deliveryType' => 'required',
             'paymentType' => 'required'
         ]);
+
         if ($req->session()->has('UserId')) {
             $currentUserId = $req->session()->get('UserId');
             $user_order = Order::where('user_id', $currentUserId)->first()->id;
             $order = Order::findOrFail($user_order);
+
+            $order->user->first_name = $req->name;
+            $order->user->last_name = $req->surname;
+            $order->user->email = $req->email;
+            $order->user->phone_num = $req->phone;
+            $order->address->address_street = $req->street;
+            $order->address->address_number = $req->streetNumber;
+            $order->address->address_city = $req->city;
+            $order->address->address_postcode = $req->postcode;
+
         } else {
-            //cookies order tu bude
-            $order = Order::where('user_id','25')->first();
+            $order = new Order;
+            $order->value = $req->session()->get('CartValue');
+
+            $user = new User;
+            $user->first_name = $req->name;
+            $user->last_name = $req->surname;
+            $user->phone_num = $req->phone;
+            $user->role = 'user';
+            $user->save();
+
+            $address = new Adresa;
+            $address->address_street = $req->street;
+            $address->address_number = $req->streetNumber;
+            $address->address_city = $req->city;
+            $address->address_postcode = $req->postcode;
+            $address->save();
+
+            $order->user_id = $user->id;
+            $order->address_id = $address->id;
+
+            $req->session()->forget('CartValue');
+            $req->session()->forget('ShoppingCart');
+
         }
-        $order->user->first_name = $req->name;
-        $order->user->last_name = $req->surname;
-        $order->user->email = $req->email;
-        $order->user->phone_num = $req->phone;
-        $order->address->address_street = $req->street;
-        $order->address->address_number = $req->streetNumber;
-        $order->address->address_city = $req->city;
-        $order->address->address_postcode = $req->postcode;
         $order->delivery = $req->deliveryType;
         $order->payment = $req->paymentType;
         if($req->deliveryType == 'Doručenie na adresu')
@@ -121,6 +219,7 @@ class OrderController extends Controller
         }
         $order->state = 'completed';
         $order->push();
+
         return view('pages/order/thank-you', [
             'order_id' => $order->id
         ]);

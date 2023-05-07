@@ -25,7 +25,7 @@
                                 <img class="img-fluid" src="{{ $images->whereIn('product_id', $book->id)->whereIn('type', 'main')->first()->path  ?? '/images/book_covers/error.png'  }}" alt="Book cover">
                             </div>
                             <div class="d-flex justify-content-between bg-light">
-                                <span class="fs-4 ms-2 mt-3 text-black"><b>13,25€</b></span>
+                                <span class="fs-4 ms-2 mt-3 text-black"><b>{{ number_format((float)$book->price, 2, '.', '') }}€</b></span>
                                 <button class="mt-2 btn btn-success rounded-extra float-end">
                                     <img class="img-fluid d-block mx-auto" src="images/basket/basket-light.svg"
                                          width="30"
@@ -47,7 +47,7 @@
                 <div class="row align-middle pt-3 bg-white shadow-sm rounded-extra mt-4 mb-5 pb-3">
                     <h1 class="col-12 pb-3 ps-5 pt-3" id="category-title">
                         @if( $favorites)
-                            Oblúbené
+                            Vaše oblúbené
                         @else
                             Odporúčné
                         @endif

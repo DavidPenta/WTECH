@@ -2,38 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Image;
 use App\Models\Favorites;
-
-class BookMock
-{
-    public int $id;
-    public string $name;
-    public string $authorName;
-    public string $publisherName;
-    public int $pageCount;
-    public string $description;
-    public float $price;
-
-    public function __construct(int    $id,
-                                string $name,
-                                string $authorName,
-                                string $publisherName,
-                                int    $pageCount,
-                                string $description,
-                                float  $price)
-    {
-        $this->id = $id;
-        $this->name = $name;
-        $this->authorName = $authorName;
-        $this->publisherName = $publisherName;
-        $this->pageCount = $pageCount;
-        $this->description = $description;
-        $this->price = $price;
-    }
-}
+use App\Models\Order;
+use App\Models\OrderProduct;
+use App\Models\Category;
+use Illuminate\Support\Facades\DB;
 
 class ProductsController extends Controller
 {
@@ -43,26 +20,6 @@ class ProductsController extends Controller
         'minPages' => 1,
         'maxPages' => 10000,
         'pageSize' => 10
-    ];
-
-    private static array $categoryTitleMapping = [
-        'bestseller' => 'Bestsellery',
-        'news' => 'Novinky',
-        'youngadult' => 'Young Adult',
-        'romance' => 'Romantika',
-        'crime' => 'Krimi a detektívky',
-        'thriller' => 'Trilery',
-        'adventure' => 'Dobrodružné',
-        'family' => 'Rodina',
-        'fantasy' => 'Fantasy',
-        'scifi' => 'Sci-fi',
-        'novels' => 'Romány a novely',
-        'biography' => 'Biografie',
-        'poetry' => 'Poézia',
-        'lifestyle' => 'Životný štýl',
-        'children' => 'Deti a mládež',
-        'education' => 'Náučná a odborná literatúra',
-        'all' => 'Všetky vyhľadávania'
     ];
 
     private static array $categoryOrderOptions = [
@@ -75,16 +32,42 @@ class ProductsController extends Controller
     ];
 
     private static array $bookLanguageOptions = [
-        'all',
-        'sk',
-        'en',
-        'cz',
-        'de'
+        'sk' => 'Slovenský',
+        'en' => 'Anglický',
+        'cz' => 'Český',
+        'de' => 'Nemecký',
     ];
 
-    public function ParseShoppingCartCookie(string $value)
+    public function SerializeShoppingCartCookie(array $value)
     {
-        // TODO
+        $results = [];
+        \Log::debug($value);
+        foreach ($value as $bookId => $bookCount)
+        {
+            array_push($results, $bookId.'='.$bookCount);
+        }
+        $result = implode(';', $results);
+        return $result;
+    }
+
+    public function DeserializeShoppingCartCookie(string $value)
+    {
+        $result = [];
+        if ($value == '')
+        {
+            return $result;
+        }
+        $books = explode(';', $value);
+        \Log::debug($value);
+        \Log::debug($books);
+        foreach ($books as $bookData)
+        {
+            $idAndCount = explode('=', $bookData);
+            $bookId = $idAndCount[0];
+            $bookCount = $idAndCount[1];
+            $result[$bookId] = $bookCount;
+        }
+        return $result;
     }
 
     public function CategoryRoute(Request $req)
@@ -92,9 +75,19 @@ class ProductsController extends Controller
         $searchQuery = $req->search;
         $pageNumber = $req->page;
         $categoryNameFromRequest = $req->categoryName;
-        $categoryName = array_key_exists($categoryNameFromRequest, self::$categoryTitleMapping)
-            ? self::$categoryTitleMapping[$req->categoryName]
-            : 'Neznáma kategória';
+        $foundCategories = Category::where('short', '=', $categoryNameFromRequest)
+            ->get();
+        if (count($foundCategories) == 0)
+        {
+            $category = (object) [
+                'id' => -1,
+                'full' => $categoryNameFromRequest == 'search' ? 'Vyhľadávanie: "'.$searchQuery.'"' : 'Neznáma kategória'
+            ];
+        }
+        else
+        {
+            $category = $foundCategories[0];
+        }
         $categoryOrderFromRequest = $req->order;
         $categoryOrder = in_array($categoryOrderFromRequest, self::$categoryOrderOptions)
             ? $categoryOrderFromRequest
@@ -104,21 +97,31 @@ class ProductsController extends Controller
         $minPages = $req->{'min-pages'} ?? self::$defaultValues['minPages'];
         $maxPages = $req->{'max-pages'} ?? self::$defaultValues['maxPages'];
         $languageFromRequest = $req->language;
-        $language = in_array($languageFromRequest, self::$bookLanguageOptions)
-            ? $languageFromRequest
-            : 'all';
+
+        $language = 'all';
+        if ($languageFromRequest != 'all'){
+            $language = self::$bookLanguageOptions[$languageFromRequest] ?? 'all';
+        }
 
         $bookOrderingProperty = $categoryOrder == 'new' || $categoryOrder == 'old' ? 'date' : ($categoryOrder == 'cheap' || $categoryOrder == 'expensive' ? 'price' : ($categoryOrder == 'short' || $categoryOrder == 'long' ? 'num_of_pages' : 'id'));
         $bookOrderingDirection = $categoryOrder == 'old' || $categoryOrder == 'cheap' || $categoryOrder == 'short' ? 'asc' : 'desc';
+
         if (request('search')) {
             $allBooks = Product::with('mainImage')
-                ->where('name','LIKE','%'.$searchQuery.'%')
-                ->orWhere('author','LIKE','%'.$searchQuery.'%')
-                ->orWhere('description','LIKE','%'.$searchQuery.'%')
-                ->where('price', '>',$minPrice)
-                ->where('price', '<', $maxPrice)
-                ->where('num_of_pages', '>', $minPages)
-                ->where('num_of_pages', '<', $maxPages);
+                ->where('price', '>=',$minPrice)
+                ->where('price', '<=', $maxPrice)
+                ->where('num_of_pages', '>=', $minPages)
+                ->where('num_of_pages', '<=', $maxPages)
+                ->where(function($query) use ($searchQuery) {
+                    $query->where('name', 'like', '%'.$searchQuery.'%')
+                        ->orWhere('author', 'like', '%'.$searchQuery.'%')
+                        ->orWhere('description', 'like', '%'.$searchQuery.'%');
+                });
+
+            if ($language != 'all') {
+                $allBooks = $allBooks->where('language', '=', $language);
+            }
+
             $bookCount = $allBooks->count();
             $books = $allBooks->orderBy($bookOrderingProperty, $bookOrderingDirection)
                 ->skip(self::$defaultValues['pageSize'] * ($pageNumber - 1))
@@ -126,13 +129,16 @@ class ProductsController extends Controller
                 ->get();
             \Log::debug($books);
             $maxPageNumber = ceil($bookCount / self::$defaultValues['pageSize']);
-            $categoryName = "Vyhľadávanie: " . $searchQuery;
         } else {
             $allBooks = Product::with('mainImage')
-                ->where('price', '>',$minPrice)
-                ->where('price', '<', $maxPrice)
-                ->where('num_of_pages', '>', $minPages)
-                ->where('num_of_pages', '<', $maxPages);
+                ->where('category_id', '=', $category->id)
+                ->where('price', '>=',$minPrice)
+                ->where('price', '<=', $maxPrice)
+                ->where('num_of_pages', '>=', $minPages)
+                ->where('num_of_pages', '<=', $maxPages);
+            if ($language != 'all') {
+                $allBooks = $allBooks->where('language', '=', $language);
+            }
             $bookCount = $allBooks->count();
             $books = $allBooks->orderBy($bookOrderingProperty, $bookOrderingDirection)
                 ->skip(self::$defaultValues['pageSize'] * ($pageNumber - 1))
@@ -143,8 +149,9 @@ class ProductsController extends Controller
         }
 
         return view('pages/products/category', [
+            'search' => $searchQuery,
             'category' => $categoryNameFromRequest,
-            'categoryName' => $categoryName,
+            'categoryName' => $category->full,
             'categoryOrder' => $categoryOrder,
             'pageNumber' => $pageNumber,
             'maxPageNumber' => $maxPageNumber,
@@ -152,7 +159,7 @@ class ProductsController extends Controller
             'maxPrice' => $maxPrice,
             'minPages' => $minPages,
             'maxPages' => $maxPages,
-            'language' => $language,
+            'language' => $languageFromRequest,
             'bookList' => $books
         ]);
     }
@@ -172,7 +179,7 @@ class ProductsController extends Controller
             ]);
         }
 
-        $userId = $req->session()->has('UserId') ?  $req->session()->get('UserId') : '';
+        $userId = $req->session()->get('UserId');
         $isFavorite = Favorites::where('product_id', '=', $productId)
             ->where('user_id', '=', $userId)
             ->get()
@@ -199,10 +206,13 @@ class ProductsController extends Controller
         }
         else
         {
+            $productId = $req->{'product-id'};
+            $images = Image::where('product_id', $productId)->get();
             $bookData = Product::with('images')->find($productId);
             return view('pages/products/product-detail', [
                 'bookData' => $bookData,
-                'isFavorite' => false
+                'isFavorite' => false,
+                'images' => $images
             ]);
         }
     }
@@ -210,17 +220,19 @@ class ProductsController extends Controller
     public function ProductDetailFavoriteRoute(Request $req)
     {
         $productId = $req->{'product-id'};
+        $images = Image::where('product_id', $productId)->get();
         $bookData = Product::with('images')->find($productId);
         \Log::debug($productId);
         if (!$req->session()->has('UserId'))
         {
             return view('pages/products/product-detail', [
                 'bookData' => $bookData,
-                'isFavorite' => false
+                'isFavorite' => false,
+                'images' => $images
             ]);
         }
 
-        $userId = $req->session()->has('UserId') ?  $req->session()->get('UserId') : '';
+        $userId = $req->session()->get('UserId');
         $favorite = Favorites::where('product_id', '=', $productId)->where('user_id', '=', $userId);
 
         if (count($favorite->get()) > 0)
@@ -240,17 +252,114 @@ class ProductsController extends Controller
         \Log::debug($isFavorite);
         return view('pages/products/product-detail', [
             'bookData' => $bookData,
-            'isFavorite' => $isFavorite
+            'isFavorite' => $isFavorite,
+            'images' => $images
         ]);
     }
 
     public function ProductDetailAddToCartRoute(Request $req)
     {
         $productId = $req->{'product-id'};
-        $userId = $req->session()->has('UserId') ?  $req->session()->get('UserId') : '';
+        $images = Image::where('product_id', $productId)->get();
+        $bookData = Product::with('images')->find($productId);
+
+        if (!$req->session()->has('UserId'))
+        {
+            $shoppingCartFromCookies = $req->session()->has('ShoppingCart') ? $req->session()->get('ShoppingCart') : '';
+            $shoppingCart = self::DeserializeShoppingCartCookie($shoppingCartFromCookies);
+            if (array_key_exists($productId, $shoppingCart))
+            {
+                $shoppingCart[$productId]++;
+            }
+            else
+            {
+                $shoppingCart[$productId] = 1;
+            }
+            $shoppingCartSerialized = self::SerializeShoppingCartCookie($shoppingCart);
+            $req->session()->put('ShoppingCart', $shoppingCartSerialized);
+            return view('pages/products/product-detail', [
+                'bookData' => $bookData,
+                'isFavorite' => false,
+                'images' => $images
+            ]);
+        }
+
+        $userId = $req->session()->get('UserId');
+        $user = User::find($userId);
+        $draftOrders = Order::where('user_id', '=', $userId)
+            ->where('state', '=', 'draft')
+            ->get();
+
+        \Log::debug($draftOrders);
+        if (count($draftOrders) > 0)
+        {
+            $draftOrder = $draftOrders[0];
+        }
+        else
+        {
+            $draftOrder = new Order;
+            $draftOrder->state = 'draft';
+            $draftOrder->user_id = $userId;
+            $draftOrder->address_id = $user->address->id;
+            $draftOrder->save();
+        }
+
+        $orderProducts = OrderProduct::where('order_id', '=', $draftOrder->id)
+            ->where('product_id', '=', $productId);
+
+        \Log::debug($orderProducts->get());
+        if ($orderProducts->count() > 0)
+        {
+            $orderProduct = $orderProducts->first();
+        }
+        else
+        {
+            $orderProduct = new OrderProduct;
+            $orderProduct->order_id = $draftOrder->id;
+            $orderProduct->product_id = $productId;
+            $orderProduct->quantity = 0;
+        }
+        $orderProduct->quantity++;
+        $orderProduct->save();
+
+        $isFavorite = Favorites::where('product_id', '=', $productId)
+            ->where('user_id', '=', $userId)
+            ->get()
+            ->count() > 0;
+
         return view('pages/products/product-detail', [
             'bookData' => $bookData,
-            'isFavorite' => $isFavorite
+            'isFavorite' => $isFavorite,
+            'images' => $images
         ]);
+    }
+
+    private function getBooksOrderedByFavorite()
+    {
+        return DB::select('SELECT a.id, a.name, a.author, a.description, a.language, a.num_of_pages, a.publisher, a.price, a.date, count(*) as c
+                                   FROM "Product" as a FULL OUTER JOIN "Favorites" as b ON (b.product_id = a.id)
+                                   GROUP BY a.id
+                                   ORDER BY c DESC LIMIT 10;');
+    }
+    public function index(Request $request)
+    {
+        $images = Image::all();
+        $favorite_bool = false;
+        if ($request->session()->has('UserId')){
+            $favorites = Favorites::where('user_id', '=', $request->session()->get('UserId'))->get();
+            $books = Product::whereIn('id', $favorites->pluck('product_id'))->get();
+            $favorite_bool = true;
+        }
+        else {
+            $books = $this->getBooksOrderedByFavorite();
+        }
+        $number_of_bestsellers = round(count($books) / 2);
+        if ($number_of_bestsellers == 0) {
+            $favorite_bool = false;
+            $books = $this->getBooksOrderedByFavorite();
+            $number_of_bestsellers = 5;
+        }
+        $bestsellers = Product::inRandomOrder()->where('category_id','=', 1)->take($number_of_bestsellers)->get();
+        return view('pages/index', ['bookList' => $books, 'bestsellers' => $bestsellers, 'images' => $images, 'favorites' => $favorite_bool]);
     }
 }

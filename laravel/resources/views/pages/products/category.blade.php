@@ -20,8 +20,9 @@
             <form method="get" class="align-middle p-3 p-lg-5 bg-white shadow-sm rounded-extra mt-4">
                 <h3 class="col-12 pb-3 ps-4">Zoradiť produkty:</h3>
                 <section class="col-12 text-left text-md-start">
+                    <input type="hidden" name="search" value="{{ $search }}" />
                     <input type="hidden" name="categoryName" value="{{ $category }}" />
-                    <input type="hidden" name="page" value="{{ $pageNumber }}" />
+                    <input type="hidden" name="page" value="1" />
                     <input type="hidden" name="min-price" value="{{ $minPrice }}" />
                     <input type="hidden" name="max-price" value="{{ $maxPrice }}" />
                     <input type="hidden" name="min-pages" value="{{ $minPages }}" />
@@ -60,8 +61,9 @@
             </form>
 
             <form method="get" class="align-middle p-3 p-lg-5 bg-white shadow-sm rounded-extra mt-4">
+                <input type="hidden" name="search" value="{{ $search }}" />
                 <input type="hidden" name="categoryName" value="{{ $category }}" />
-                <input type="hidden" name="page" value="{{ $pageNumber }}" />
+                <input type="hidden" name="page" value="1" />
                 <input type="hidden" name="order" value="{{ $categoryOrder }}" />
                 <h3 class="col-12 pb-3 ps-4">Filtrovať produkty:</h3>
                 <h4 class="col-12 mt-4">Cena:</h4>
@@ -151,12 +153,12 @@
                     @endforeach
                     <section class="col-12 d-flex container btn-group justify-content-center align-items-center">
                         @if ($pageNumber > 2)
-                            <a id="page-anchor-0" href="{{route('category', ['categoryName' => $category, 'page' => $pageNumber - 2, 'order' => $categoryOrder, 'minPrice' => $minPrice, 'maxPrice' => $maxPrice, 'minPages' => $minPages, 'maxPages' => $maxPages, 'language' => $language])}}">
+                            <a id="page-anchor-0" href="{{route('category', ['search' => $search, 'categoryName' => $category, 'page' => $pageNumber - 2, 'order' => $categoryOrder, 'minPrice' => $minPrice, 'maxPrice' => $maxPrice, 'minPages' => $minPages, 'maxPages' => $maxPages, 'language' => $language])}}">
                                 <button class="btn btn-outline-secondary m-2" id="page-label-0">{{ $pageNumber - 2 }}</button>
                             </a>
                         @endif
                         @if ($pageNumber > 1)
-                            <a id="page-anchor-1" href="{{route('category', ['categoryName' => $category, 'page' => $pageNumber - 1, 'order' => $categoryOrder, 'minPrice' => $minPrice, 'maxPrice' => $maxPrice, 'minPages' => $minPages, 'maxPages' => $maxPages, 'language' => $language])}}">
+                            <a id="page-anchor-1" href="{{route('category', ['search' => $search, 'categoryName' => $category, 'page' => $pageNumber - 1, 'order' => $categoryOrder, 'minPrice' => $minPrice, 'maxPrice' => $maxPrice, 'minPages' => $minPages, 'maxPages' => $maxPages, 'language' => $language])}}">
                                 <button class="btn btn-outline-secondary m-2" id="page-label-1">{{ $pageNumber - 1 }}</button>
                             </a>
                         @endif
@@ -164,12 +166,12 @@
                             <button class="btn btn-outline-primary btn-lg m-2" id="page-label-2">{{ $pageNumber }}</button>
                         </a>
                         @if ($pageNumber < $maxPageNumber)
-                            <a id="page-anchor-3" href="{{route('category', ['categoryName' => $category, 'page' => $pageNumber + 1, 'order' => $categoryOrder, 'minPrice' => $minPrice, 'maxPrice' => $maxPrice, 'minPages' => $minPages, 'maxPages' => $maxPages, 'language' => $language])}}">
+                            <a id="page-anchor-3" href="{{route('category', ['search' => $search, 'categoryName' => $category, 'page' => $pageNumber + 1, 'order' => $categoryOrder, 'minPrice' => $minPrice, 'maxPrice' => $maxPrice, 'minPages' => $minPages, 'maxPages' => $maxPages, 'language' => $language])}}">
                                 <button class="btn btn-outline-secondary m-2" id="page-label-3">{{ $pageNumber + 1 }}</button>
                             </a>
                         @endif
                         @if ($pageNumber < $maxPageNumber - 1)
-                            <a id="page-anchor-4" href="{{route('category', ['categoryName' => $category, 'page' => $pageNumber + 2, 'order' => $categoryOrder, 'minPrice' => $minPrice, 'maxPrice' => $maxPrice, 'minPages' => $minPages, 'maxPages' => $maxPages, 'language' => $language])}}">
+                            <a id="page-anchor-4" href="{{route('category', ['search' => $search, 'categoryName' => $category, 'page' => $pageNumber + 2, 'order' => $categoryOrder, 'minPrice' => $minPrice, 'maxPrice' => $maxPrice, 'minPages' => $minPages, 'maxPages' => $maxPages, 'language' => $language])}}">
                                 <button class="btn btn-outline-secondary m-2" id="page-label-4">{{ $pageNumber + 2 }}</button>
                             </a>
                         @endif
