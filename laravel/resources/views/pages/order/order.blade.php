@@ -12,39 +12,39 @@
         @if (is_null($value))
             <div class="col-12 col-md-6">
                 <label class="ps-3" for="name">Meno</label>
-                <input name="name" type="text" class="form-control" maxlength="64" value="{{ $order->user->first_name }}">
+                <input required id="name" name="name" type="text" class="form-control" maxlength="64" value="{{ $order->user->first_name }}">
             </div>
             <div class="col-12 col-md-6">
                 <label class="ps-3" for="surname">Priezvisko</label>
-                <input name="surname" type="text" class="form-control" maxlength="64" value="{{ $order->user->last_name }}">
+                <input required id="surname" name="surname" type="text" class="form-control" maxlength="64" value="{{ $order->user->last_name }}">
             </div>
             <div class="col-12 col-md-6">
                 <label class="ps-3" for="email">Email</label>
-                <input name="email" type="text" class="form-control" maxlength="254" value="{{ $order->user->email }}">
+                <input required id="email" name="email" type="text" class="form-control" maxlength="254" value="{{ $order->user->email }}">
             </div>
             <div class="col-12 col-md-6">
                 <label class="ps-3" for="phone">Telefónne číslo</label>
-                <input name="phone" type="text" class="form-control" maxlength="15" value="{{ $order->user->phone_num }}">
+                <input required id="phone" name="phone" type="text" class="form-control" maxlength="15" value="{{ $order->user->phone_num }}">
             </div>
             <div class="col-12 col-md-6">
                 <div class="row">
                     <div class="col-9 pe-0">
                         <label class="ps-3" for="street">Ulica</label>
-                        <input name="street" type="text" class="form-control" maxlength="128" value="{{ is_null($order->address) ? '' : $order->address->address_street }}">
+                        <input required id="street" name="street" type="text" class="form-control" maxlength="128" value="{{ is_null($order->address) ? '' : $order->address->address_street }}">
                     </div>
                     <div class="col-3">
                         <label class="ps-3" for="street-number">Číslo</label>
-                        <input name="streetNumber" type="text" class="form-control" maxlength="16" value="{{ is_null($order->address) ? '' : $order->address->address_number }}">
+                        <input required id="street-number" name="streetNumber" type="text" class="form-control" maxlength="16" value="{{ is_null($order->address) ? '' : $order->address->address_number }}">
                     </div>
                 </div>
             </div>
             <div class="col-12 col-md-6">
                 <label class="ps-3" for="city">Mesto</label>
-                <input name="city" type="text" class="form-control" maxlength="128" value="{{ is_null($order->address) ? '' : $order->address->address_city }}">
+                <input required id="city" name="city" type="text" class="form-control" maxlength="128" value="{{ is_null($order->address) ? '' : $order->address->address_city }}">
             </div>
             <div class="col-12 col-md-6">
                 <label class="ps-3" for="postcode">PSČ</label>
-                <input name="postcode" type="text" class="form-control pe-5" maxlength="10" value="{{ is_null($order->address) ? '' : $order->address->address_postcode }}">
+                <input required id="postcode" name="postcode" type="text" class="form-control pe-5" maxlength="10" value="{{ is_null($order->address) ? '' : $order->address->address_postcode }}">
             </div>
             <div class="row mt-5 mb-5 ms-3">
                 <div class="col-md-6 col-12 mb-4 col-md-0">
@@ -84,39 +84,39 @@
         @else
             <div class="col-12 col-md-6">
                 <label class="ps-3" for="name">Meno</label>
-                <input name="name" type="text" class="form-control" maxlength="64">
+                <input required id="name" name="name" type="text" class="form-control" maxlength="64">
             </div>
             <div class="col-12 col-md-6">
                 <label class="ps-3" for="surname">Priezvisko</label>
-                <input name="surname" type="text" class="form-control" maxlength="64">
+                <input required id="surname" name="surname" type="text" class="form-control" maxlength="64">
             </div>
             <div class="col-12 col-md-6">
                 <label class="ps-3" for="email">Email</label>
-                <input name="email" type="text" class="form-control" maxlength="254">
+                <input required id="email" name="email" type="text" class="form-control" maxlength="254">
             </div>
             <div class="col-12 col-md-6">
                 <label class="ps-3" for="phone">Telefónne číslo</label>
-                <input name="phone" type="text" class="form-control" maxlength="15">
+                <input required id="phone" name="phone" type="text" class="form-control" maxlength="15">
             </div>
             <div class="col-12 col-md-6">
                 <div class="row">
                     <div class="col-9 pe-0">
                         <label class="ps-3" for="street">Ulica</label>
-                        <input name="street" type="text" class="form-control" maxlength="128">
+                        <input required id="street" name="street" type="text" class="form-control" maxlength="128">
                     </div>
                     <div class="col-3">
                         <label class="ps-3" for="street-number">Číslo</label>
-                        <input name="streetNumber" type="text" class="form-control" maxlength="16">
+                        <input required id="street-number" name="streetNumber" type="text" class="form-control" maxlength="16">
                     </div>
                 </div>
             </div>
             <div class="col-12 col-md-6">
                 <label class="ps-3" for="city">Mesto</label>
-                <input name="city" type="text" class="form-control" maxlength="128">
+                <input required id="city" name="city" type="text" class="form-control" maxlength="128">
             </div>
             <div class="col-12 col-md-6">
                 <label class="ps-3" for="postcode">PSČ</label>
-                <input name="postcode" type="text" class="form-control pe-5" maxlength="10">
+                <input required id="postcode" name="postcode" type="text" class="form-control pe-5" maxlength="10">
             </div>
             <div class="row mt-5 mb-5 ms-3">
                 <div class="col-md-6 col-12 mb-4 col-md-0">
