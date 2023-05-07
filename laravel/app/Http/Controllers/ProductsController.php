@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Product;
@@ -300,6 +301,13 @@ class ProductsController extends Controller
             $draftOrder = new Order;
             $draftOrder->state = 'draft';
             $draftOrder->user_id = $userId;
+            if ($user->address == null)
+            {
+                $address = new Address;
+                $address->save();
+                $user->address_id = $address->id;
+                $user->save();
+            }
             $draftOrder->address_id = $user->address->id;
             $draftOrder->save();
         }

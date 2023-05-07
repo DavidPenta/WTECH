@@ -24,13 +24,8 @@
                             <div class="d-flex col-6 align-left text-center container">
                                 <img class="img-fluid" src="{{ $images->whereIn('product_id', $book->id)->whereIn('type', 'main')->first()->path  ?? '/images/book_covers/error.png'  }}" alt="Book cover">
                             </div>
-                            <div class="d-flex justify-content-between bg-light">
-                                <span class="fs-4 ms-2 mt-3 text-black"><b>{{ number_format((float)$book->price, 2, '.', '') }}€</b></span>
-                                <button class="mt-2 btn btn-success rounded-extra float-end">
-                                    <img class="img-fluid d-block mx-auto" src="images/basket/basket-light.svg"
-                                         width="30"
-                                         alt="Add to cart">
-                                </button>
+                            <div class="d-flex container justify-content-end">
+                                <span class="fs-4 mt-3 text-black float-end pe-4"><b>{{ number_format((float)$book->price, 2, '.', '') }}€</b></span>
                             </div>
                         </a>
                     </div>
@@ -79,17 +74,8 @@
                                                         {{ $book->description }}
                                                     </p>
                                                 </section>
-                                                <div class="d-flex container align-left align-items-end">
-                                                    <div class="d-flex container col-6">
-                                                        <span class="fs-4 mt-3 text-black"><b>{{ number_format((float)$book->price, 2, '.', '') }}€</b></span>
-                                                    </div>
-                                                    <div class="d-flex container col-6 d-flex flex-row-reverse">
-                                                        <button class="btn btn-success rounded-extra">
-                                                            <img class="img-fluid d-block mx-auto"
-                                                                 src="../../images/basket/basket-light.svg" width="30"
-                                                                 alt="Add to cart">
-                                                        </button>
-                                                    </div>
+                                                <div class="d-flex container justify-content-end">
+                                                    <span class="fs-4 mt-3 text-black float-end pe-4"><b>{{ number_format((float)$book->price, 2, '.', '') }}€</b></span>
                                                 </div>
                                             </div>
                                         </section>

@@ -30,16 +30,14 @@ class UserAuthController extends Controller
             'password_2' => 'required|min:5|max:50|same:password_1',
         ]);
 
-        if ($request->street != null || $request->street_number != null || $request->city != null || $request->postcode != null) {
-            $address = new Address;
-            $address->address_street = $request->street;
-            $address->address_number = $request->street_number;
-            $address->address_city = $request->city;
-            $address->address_postcode = $request->postcode;
-            $res_address = $address->save();
-        } else {
-            $res_address = true;
-        }
+
+        $address = new Address;
+        $address->address_street = $request->street;
+        $address->address_number = $request->street_number;
+        $address->address_city = $request->city;
+        $address->address_postcode = $request->postcode;
+        $res_address = $address->save();
+
 
         if ($res_address) {
             $user = new User;
@@ -68,22 +66,17 @@ class UserAuthController extends Controller
         ]);
         $user = User::where('email', '=', $request->user_email)->first();
         if ($user) {
-            if (hash('sha512', $request->user_password) == $user->password_hash)
-            {
+            if (hash('sha512', $request->user_password) == $user->password_hash) {
                 $request->session()->put('UserId', $user->id);
                 if ($user->role == 'admin') {
                     $request->session()->put('AdminId', $user->id);
 
                 }
                 return redirect('/');
-            }
-            else
-            {
+            } else {
                 return back()->with('fail', 'Nesprávne heslo.')->with('user_email', $request->user_email);
             }
-        }
-        else
-        {
+        } else {
             return back()->with('fail', 'Nesprávny email.')->with('user_email', $request->user_email);
         }
     }

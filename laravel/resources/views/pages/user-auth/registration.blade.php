@@ -20,22 +20,22 @@
                 @csrf
                 <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
                     <label class="ps-2" for="name">Meno*</label>
-                    <input id=name name="name" type="text" class="form-control" maxlength="64" value="{{old('name')}}">
+                    <input required id=name name="name" type="text" class="form-control" maxlength="64" value="{{old('name')}}">
                     <span class="text-danger"> @error('name') {{$message}} @enderror</span>
                 </div>
                 <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
                     <label class="ps-2" for="surname">Priezvisko*</label>
-                    <input id="surname" name="surname" type="text" class="form-control" maxlength="64" value="{{old('surname')}}">
+                    <input required id="surname" name="surname" type="text" class="form-control" maxlength="64" value="{{old('surname')}}">
                     <span class="text-danger"> @error('surname') {{$message}} @enderror</span>
                 </div>
                 <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
                     <label class="ps-2" for="email">Email*</label>
-                    <input id=email name="email" type="text" class="form-control" maxlength="254" value="{{old('email')}}">
+                    <input required id=email name="email" type="text" class="form-control" maxlength="254" value="{{old('email')}}">
                     <span class="text-danger"> @error('email') {{$message}} @enderror</span>
                 </div>
                 <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
                     <label class="ps-2" for="phone">Telefónne číslo</label>
-                    <input id="phone" name="phone" type="text" class="form-control" maxlength="15" value="{{old('phone')}}">
+                    <input id="phone" name="phone" type="text" class="form-control" maxlength="15" minlength="10" value="{{old('phone')}}">
                     <span class="text-danger"> @error('phone') {{$message}} @enderror</span>
                 </div>
                 <div class="col-12 col-md-6 pt-4 ps-4 pe-4">
@@ -64,12 +64,12 @@
                 </div>
                 <div class="col-12 col-md-6 pt-5 ps-4 pe-4 ">
                     <label class="ps-2" for="password_1">Heslo*</label>
-                    <input id="password_1" name="password_1" type="password" class="form-control" minlength="5" value="{{old('password_1')}}">
+                    <input required id="password_1" name="password_1" type="password" class="form-control" minlength="5" value="{{old('password_1')}}">
                     <span class="text-danger"> @error('password') {{$message}} @enderror</span>
                 </div>
                 <div class="col-12 col-md-6 pt-5 ps-4 pe-4 pb-5">
                     <label class="ps-2" for="password_2">Heslo znovu*</label>
-                    <input id="password_2" name="password_2" type="password" minlength="5" class="form-control" value="{{old('password_2')}}">
+                    <input required id="password_2" name="password_2" type="password" minlength="5" class="form-control" value="{{old('password_2')}}">
                     <span class="text-danger"> @error('password_2') {{$message}} @enderror</span>
                 </div>
             </form>
