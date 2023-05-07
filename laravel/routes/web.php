@@ -45,12 +45,19 @@ Route::post('/admin-book-edit/{id}', [AdminController::class, 'saveEditedBook'])
     ->middleware('isLoggedIn')
     ->name('saveEditedBook');
 
-Route::get('/shopping-cart', [OrderController::class, 'ShoppingCartRoute'])->name('shopping-cart');
-Route::post('/shopping-cart/{id}', [OrderController::class, 'ProductCount'])->name('shoppingCart.quantity');
-Route::post('//shopping-cart/d/{id}', [OrderController::class, 'DeleteProduct'])->name('shoppingCart.remove');
+Route::get('/shopping-cart', [OrderController::class, 'ShoppingCartRoute'])
+->name('shopping-cart');
+
+Route::post('/shopping-cart/{id}', [OrderController::class, 'ProductCount'])
+->name('shoppingCart.quantity');
+
+Route::post('//shopping-cart/d/{id}', [OrderController::class, 'DeleteProduct'])
+->name('shoppingCart.remove');
 
 Route::get('/order', [OrderController::class, 'OrderRoute']);
-Route::post('/order', [OrderController::class, 'CompleteOrder'])->name('order.complete');
+
+Route::post('/order', [OrderController::class, 'CompleteOrder'])
+->name('order.complete');
 
 Route::get('/category', [ProductsController::class, 'CategoryRoute'])
     ->name('category');
