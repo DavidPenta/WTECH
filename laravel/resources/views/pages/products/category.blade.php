@@ -22,7 +22,7 @@
                 <section class="col-12 text-left text-md-start">
                     <input type="hidden" name="search" value="{{ $search }}" />
                     <input type="hidden" name="categoryName" value="{{ $category }}" />
-                    <input type="hidden" name="page" value="{{ $pageNumber }}" />
+                    <input type="hidden" name="page" value="1" />
                     <input type="hidden" name="min-price" value="{{ $minPrice }}" />
                     <input type="hidden" name="max-price" value="{{ $maxPrice }}" />
                     <input type="hidden" name="min-pages" value="{{ $minPages }}" />
@@ -61,9 +61,9 @@
             </form>
 
             <form method="get" class="align-middle p-3 p-lg-5 bg-white shadow-sm rounded-extra mt-4">
-                <input type="hidden" name="search" value="{{ $search }}" />    
+                <input type="hidden" name="search" value="{{ $search }}" />
                 <input type="hidden" name="categoryName" value="{{ $category }}" />
-                <input type="hidden" name="page" value="{{ $pageNumber }}" />
+                <input type="hidden" name="page" value="1" />
                 <input type="hidden" name="order" value="{{ $categoryOrder }}" />
                 <h3 class="col-12 pb-3 ps-4">Filtrovať produkty:</h3>
                 <h4 class="col-12 mt-4">Cena:</h4>
