@@ -22,4 +22,8 @@ class Product extends Model
     public function mainImage() {
         return $this->images()->where('type', '=', 'main')->one();
     }
+
+    public function category() {
+        return $this->belongsTo('App\Models\Category');
+    }
 }

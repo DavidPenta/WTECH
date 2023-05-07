@@ -8,6 +8,7 @@ use App\Models\Image;
 use App\Models\Favorites;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 
 class ProductsController extends Controller
@@ -18,26 +19,6 @@ class ProductsController extends Controller
         'minPages' => 1,
         'maxPages' => 10000,
         'pageSize' => 10
-    ];
-
-    private static array $categoryTitleMapping = [
-        'bestseller' => 'Bestsellery',
-        'news' => 'Novinky',
-        'youngadult' => 'Young Adult',
-        'romance' => 'Romantika',
-        'crime' => 'Krimi a detektívky',
-        'thriller' => 'Trilery',
-        'adventure' => 'Dobrodružné',
-        'family' => 'Rodina',
-        'fantasy' => 'Fantasy',
-        'scifi' => 'Sci-fi',
-        'novels' => 'Romány a novely',
-        'biography' => 'Biografie',
-        'poetry' => 'Poézia',
-        'lifestyle' => 'Životný štýl',
-        'children' => 'Deti a mládež',
-        'education' => 'Náučná a odborná literatúra',
-        'all' => 'Všetky vyhľadávania'
     ];
 
     private static array $categoryOrderOptions = [
@@ -94,9 +75,19 @@ class ProductsController extends Controller
         $searchQuery = $req->search;
         $pageNumber = $req->page;
         $categoryNameFromRequest = $req->categoryName;
-        $categoryName = array_key_exists($categoryNameFromRequest, self::$categoryTitleMapping)
-            ? self::$categoryTitleMapping[$req->categoryName]
-            : 'Neznáma kategória';
+        $foundCategories = Category::where('short', '=', $categoryNameFromRequest)
+            ->get();
+        if (count($foundCategories) == 0)
+        {
+            $category = (object) [
+                'id' => -1,
+                'full' => $categoryNameFromRequest == 'search' ? 'Vyhľadávanie: "'.$searchQuery.'"' : 'Neznáma kategória'
+            ];
+        }
+        else
+        {
+            $category = $foundCategories[0];
+        }
         $categoryOrderFromRequest = $req->order;
         $categoryOrder = in_array($categoryOrderFromRequest, self::$categoryOrderOptions)
             ? $categoryOrderFromRequest
@@ -109,9 +100,10 @@ class ProductsController extends Controller
         $language = in_array($languageFromRequest, self::$bookLanguageOptions)
             ? $languageFromRequest
             : 'all';
-
+        
         $bookOrderingProperty = $categoryOrder == 'new' || $categoryOrder == 'old' ? 'date' : ($categoryOrder == 'cheap' || $categoryOrder == 'expensive' ? 'price' : ($categoryOrder == 'short' || $categoryOrder == 'long' ? 'num_of_pages' : 'id'));
         $bookOrderingDirection = $categoryOrder == 'old' || $categoryOrder == 'cheap' || $categoryOrder == 'short' ? 'asc' : 'desc';
+        
         if (request('search')) {
             $allBooks = Product::with('mainImage')
                 ->where('name','LIKE','%'.$searchQuery.'%')
@@ -128,9 +120,9 @@ class ProductsController extends Controller
                 ->get();
             \Log::debug($books);
             $maxPageNumber = ceil($bookCount / self::$defaultValues['pageSize']);
-            $categoryName = "Vyhľadávanie: " . $searchQuery;
         } else {
             $allBooks = Product::with('mainImage')
+                ->where('category_id', '=', $category->id)
                 ->where('price', '>',$minPrice)
                 ->where('price', '<', $maxPrice)
                 ->where('num_of_pages', '>', $minPages)
@@ -145,8 +137,9 @@ class ProductsController extends Controller
         }
 
         return view('pages/products/category', [
+            'search' => $searchQuery,
             'category' => $categoryNameFromRequest,
-            'categoryName' => $categoryName,
+            'categoryName' => $category->full,
             'categoryOrder' => $categoryOrder,
             'pageNumber' => $pageNumber,
             'maxPageNumber' => $maxPageNumber,
